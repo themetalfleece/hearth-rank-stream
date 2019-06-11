@@ -19,14 +19,17 @@ export class Game {
     public players: Player[];
 
     constructor() {
-        // this.id = uuid.v4();
-        this.id = '0'; // TODO replace with uuid
+        this.id = uuid.v4();
         this.players = [];
         games[this.id] = this;
     }
 
     public addPlayer(player: Player) {
         this.players.push(player);
+    }
+
+    public removePlayer(playerId: string) {
+        this.players = this.players.filter((player) => player.id !== playerId);
     }
 
     public incrementPlayerScore(playerId: string, by: number) {

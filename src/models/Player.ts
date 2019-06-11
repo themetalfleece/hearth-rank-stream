@@ -10,11 +10,10 @@ export class Player {
 
     constructor(name: Player['name'], score?: Player['score']) {
         this.name = name;
-        // this.id = uuid.v4();
-        this.id = '0'; // TODO use uuid
+        this.id = uuid.v4();
         this.score = score || {
-            rank: 5,
-            stars: 3,
+            rank: 4,
+            stars: 0,
         };
 
         this.validate();

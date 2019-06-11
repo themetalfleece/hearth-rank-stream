@@ -10,7 +10,10 @@ export const router = express.Router();
  */
 router.get('/:id', (req, res, next) => {
   const { id } = req.params;
-  res.send(Game.getById(id));
+  res.send({
+    ok: true,
+    game: Game.getById(id)
+  });
 });
 
 /**
@@ -19,7 +22,7 @@ router.get('/:id', (req, res, next) => {
  */
 router.post('/', (req, res, next) => {
   const game = new Game();
-  res.json({ id: game.id });
+  res.json({ ok: true, id: game.id });
 });
 
 /**
@@ -41,7 +44,7 @@ router.post('/players/', (req, res, next) => {
   const game = Game.getById(gameId);
   game.addPlayer(player);
 
-  res.json({ player });
+  res.json({ ok: true, player });
 });
 
 /**
@@ -56,5 +59,19 @@ router.post('/players/incrementScore', (req, res, next) => {
   const game = Game.getById(gameId);
   const player = game.incrementPlayerScore(playerId, by);
 
-  res.json({ player });
+  res.json({ ok: true, player });
+});
+
+/**
+ * creates a new game
+ * @apiParam {String} gameId - the game id
+ * @apiParam {Object} playerId - the player id
+ */
+router.post('/players/remove', (req, res, next) => {
+  const { gameId, playerId } = req.body;
+
+  const game = Game.getById(gameId);
+  game.removePlayer(playerId);
+
+  res.json({ ok: true });
 });
