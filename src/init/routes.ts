@@ -34,7 +34,10 @@ export const init = () => {
 
         // render the error page
         res.status(err.status || 500);
-        res.json({ ok: false });
+        res.json({
+            ok: false,
+            message: err.message,
+        });
     });
 
     /**
