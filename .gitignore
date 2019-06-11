@@ -1,0 +1,6 @@
+# dependencies
+node_modules
+# typescript build path
+dist
+# vscode settings
+.vscode
