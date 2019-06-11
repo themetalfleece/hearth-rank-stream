@@ -5,12 +5,12 @@ import * as http from 'http';
 import * as logger from 'morgan';
 import * as path from 'path';
 
+import { router as gamesRouter } from '../routes/games';
 import { router as indexRouter } from '../routes/index';
-import { router as usersRouter } from '../routes/users';
 
 export const useRoutes = (app: Express) => {
     app.use('/', indexRouter);
-    app.use('/users', usersRouter);
+    app.use('/games', gamesRouter);
 };
 
 export const init = () => {
