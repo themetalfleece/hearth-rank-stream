@@ -12,7 +12,7 @@ router.get('/:id', (req, res, next) => {
   const { id } = req.params;
   res.send({
     ok: true,
-    game: Game.getById(id)
+    game: Game.getById(id),
   });
 });
 
@@ -25,6 +25,7 @@ router.post('/', (req, res, next) => {
   res.json({ ok: true, id: game.id });
 });
 
+// TODO see if can use router.use(object will all /players routes)
 /**
  * creates a new game
  * @apiParam {String} gameId - the game id
@@ -47,6 +48,7 @@ router.post('/players/', (req, res, next) => {
   res.json({ ok: true, player });
 });
 
+// TODO make restful
 /**
  * creates a new game
  * @apiParam {String} gameId - the game id
@@ -62,6 +64,7 @@ router.post('/players/incrementScore', (req, res, next) => {
   res.json({ ok: true, player });
 });
 
+// TODO make restful
 /**
  * creates a new game
  * @apiParam {String} gameId - the game id

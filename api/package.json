@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon --watch src/**/*.ts --exec ts-node ./src/app.ts",
+    "dev": "nodemon --watch src/**/*.ts --exec ts-node ./src/index.ts",
     "build": "tsc",
-    "start": "nodemon ./dist/src/app.js",
+    "start": "nodemon ./dist/src/index.js",
     "prod": "yarn build && yarn start"
   },
   "dependencies": {

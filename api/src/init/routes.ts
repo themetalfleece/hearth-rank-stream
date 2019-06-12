@@ -9,7 +9,8 @@ import { router as gamesRouter } from '../routes/games';
 import { router as indexRouter } from '../routes/index';
 
 export const useRoutes = (app: Express) => {
-    app.use('/', indexRouter);
+    app.use(['/', '/app/*'], indexRouter);
+    // TODO /api/games
     app.use('/games', gamesRouter);
 };
 
