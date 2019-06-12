@@ -1,4 +1,5 @@
 import * as cookieParser from 'cookie-parser';
+import * as cors from 'cors';
 import { Express } from 'express';
 import * as express from 'express';
 import * as http from 'http';
@@ -6,10 +7,8 @@ import * as logger from 'morgan';
 import * as path from 'path';
 
 import { router as gamesRouter } from '../routes/games';
-import { router as indexRouter } from '../routes/index';
 
 export const useRoutes = (app: Express) => {
-    app.use(['/', '/app/*'], indexRouter);
     app.use('/api/games', gamesRouter);
 };
 
@@ -17,6 +16,7 @@ export const init = () => {
 
     const app = express();
 
+    app.use(cors());
     app.use(logger('dev'));
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
