@@ -62,11 +62,12 @@ const ModDashboard: React.FC<
     let gameElement: JSX.Element = <div> Loading </div>;
     if (game) {
         gameElement = <div>
-            id: {game.id}
+            game id: {game.id}
             <br />
             Players:
             <PlayersTable
                 players={game.players}
+                gameId={game.id}
                 onKick={async (playerId) => {
                     await apiAxios.delete(`/games/players/${playerId}`, {
                         data: {

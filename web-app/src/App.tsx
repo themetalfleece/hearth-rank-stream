@@ -14,7 +14,7 @@ const App: React.FC = () => {
         <Route path='/mod/:id'>
           <ModDashboard />
         </Route>
-        <Route path={['/', '/player']}>
+        <Route path={['/games/:gameId/players/:playerId']}>
           <Player />
         </Route>
         <Route>

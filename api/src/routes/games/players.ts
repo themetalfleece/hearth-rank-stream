@@ -2,7 +2,7 @@ import * as express from 'express';
 import { Game } from '../../models/Game';
 import { Player } from '../../models/Player';
 
-export const router = express.Router();
+export const router = express.Router({ mergeParams: true });
 
 /**
  * creates a new game

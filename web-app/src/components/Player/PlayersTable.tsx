@@ -2,6 +2,7 @@ import React from 'react';
 
 export const PlayersTable: React.FC<{
     players: any[];
+    gameId: string;
     onKick?: (playerId: string) => void;
 }> = (props) => {
     return (
@@ -17,7 +18,11 @@ export const PlayersTable: React.FC<{
                 {
                     props.players.map((player: any) => <tr key={player.id}>
                         <td>R{player.score.rank} - {player.score.stars}<span role="img" aria-label="star">⭐</span></td>
-                        <td>{player.name}</td>
+                        <td>
+                            <a href={`/games/${props.gameId}/players/${player.id}`} target='_blank'>
+                                {player.name}
+                            </a>
+                        </td>
                         {
                             props.onKick ?
                                 <td

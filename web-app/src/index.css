@@ -23,3 +23,8 @@ td, th {
   text-align: left;
   padding: 8px;
 }
+
+a, a:visited {
+  color: initial;
+  text-decoration: none;
+}
