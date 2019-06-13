@@ -13,6 +13,7 @@ const NewPlayerInput: React.FC<{
     return <input
         value={newPlayerName}
         disabled={isLoading}
+        autoFocus={true}
         onChange={(event) => {
             setNewPlayerName(event.target.value);
         }}

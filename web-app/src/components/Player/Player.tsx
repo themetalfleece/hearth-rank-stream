@@ -1,6 +1,7 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
+import PlayerScore from './PlayerScore';
 
 const Player: React.FC<
     RouteComponentProps<{
@@ -29,11 +30,11 @@ const Player: React.FC<
 
         fetchPlayer();
 
-    }, []);
+    }, [gameId, playerId]);
 
     let playerElement: JSX.Element = <div > Loading </div>;
     if (player) {
-        playerElement = <> R{player.score.rank} - {player.score.stars}<span role="img" aria-label="star">⭐</span></>
+        playerElement = <PlayerScore score={player.score} />
     }
 
     return (
