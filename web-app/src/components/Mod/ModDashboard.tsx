@@ -66,18 +66,21 @@ const ModDashboard: React.FC<
 
     let gameElement: JSX.Element = <div> Loading </div>;
     if (game) {
-        gameElement = <div>
-            game id: {game.id}
-            <br />
-            Players:
-            <PlayersTable
-                players={game.players}
+        let playerTableElement: JSX.Element = <></>;
+        if (game.id) {
+            playerTableElement = <PlayersTable
                 gameId={game.id}
                 onKick={async (playerId) => {
                     await apiAxios.delete(`/games/${gameId}/players/${playerId}`);
                     getGame();
                 }}
             />
+        }
+        gameElement = <div>
+            game id: {game.id}
+            <br />
+            Players:
+            {playerTableElement}
         </div>
     }
 

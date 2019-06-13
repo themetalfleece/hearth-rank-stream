@@ -1,4 +1,5 @@
 import * as express from 'express';
+import { init as getWs } from '../../init/websockets';
 import { Game } from '../../models/Game';
 import { Player } from '../../models/Player';
 
@@ -22,6 +23,9 @@ router.post('/', (req, res, next) => {
 
     const game = Game.getById(gameId);
     game.addPlayer(player);
+
+    const io = getWs();
+    io.to(gameId).emit('game-info', { game });
 
     res.json({ ok: true, player });
 });

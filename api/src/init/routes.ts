@@ -113,4 +113,6 @@ export const init = () => {
             ? 'pipe ' + addr
             : 'port ' + addr.port;
     });
+
+    return server;
 };

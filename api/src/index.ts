@@ -1,3 +1,5 @@
 import { init as initExpress } from './init/routes';
+import { init as initWs } from './init/websockets';
 
-initExpress();
+const server = initExpress();
+initWs(server);

@@ -1,9 +1,13 @@
 import * as express from 'express';
+import { init as getWs } from '../../init/websockets';
 import { Game } from '../../models/Game';
 import { router as playersRoute } from './players';
 
 export const router = express.Router();
 
+/**
+ * gets player info
+ */
 router.get('/:gameId/players/:playerId', (req, res) => {
   const { playerId, gameId } = req.params;
 
@@ -35,11 +39,14 @@ router.put('/:gameId/players/:playerId', (req, res, next) => {
   const game = Game.getById(gameId);
   const player = game.incrementPlayerScore(playerId, by);
 
+  const io = getWs();
+  io.to(gameId).emit('game-info', { game });
+
   res.json({ ok: true, player });
 });
 
 /**
- * repoves the player from the game
+ * removes the player from the game
  * @apiParam {Object} playerId - the player id
  * @apiParam {String} gameId - the game id
  * @apiReturns {Boolean} response.ok
@@ -49,6 +56,9 @@ router.delete('/:gameId/players/:playerId', (req, res, next) => {
 
   const game = Game.getById(gameId);
   game.removePlayer(playerId);
+
+  const io = getWs();
+  io.to(gameId).emit('game-info', { game });
 
   res.json({ ok: true });
 });
