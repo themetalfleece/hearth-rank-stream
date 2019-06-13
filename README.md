@@ -1,4 +1,9 @@
-# hearth-rank-stream
+# A tool for displaying Hearthstone Ranks in real time for streams
+
+## Usage
+* Each player can update their rank in their personal browser and the collective result will be displayed in one board with real time updates
+* This board can be seemlessly embeded into streams via chroma key (like OBS and greenscreen)
+* It was created for people racing to legend, but it can be used for multiple purposes
 
 ## How to install the requirements/dependencies
 * Clone this repo
