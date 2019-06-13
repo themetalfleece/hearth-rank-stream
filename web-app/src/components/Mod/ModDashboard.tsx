@@ -70,11 +70,7 @@ const ModDashboard: React.FC<
                 players={game.players}
                 gameId={game.id}
                 onKick={async (playerId) => {
-                    await apiAxios.delete(`/games/players/${playerId}`, {
-                        data: {
-                            gameId,
-                        }
-                    });
+                    await apiAxios.delete(`/games/${gameId}/players/${playerId}`);
                     getGame();
                 }}
             />

@@ -5,7 +5,7 @@ import { Player } from '../../models/Player';
 export const router = express.Router({ mergeParams: true });
 
 /**
- * creates a new game
+ * adds a player
  * @apiParam {String} gameId - the game id
  * @apiParam {Object} player - the player object
  * @apiParam {String} player.name - the player name
@@ -24,35 +24,4 @@ router.post('/', (req, res, next) => {
     game.addPlayer(player);
 
     res.json({ ok: true, player });
-});
-
-/**
- * creates a new game
- * @apiParam {Object} playerId - the player id
- * @apiParam {String} gameId - the game id
- * @apiParam {Number} by
- */
-router.put('/:playerId', (req, res, next) => {
-    const { gameId, by } = req.body;
-    const { playerId } = req.params;
-
-    const game = Game.getById(gameId);
-    const player = game.incrementPlayerScore(playerId, by);
-
-    res.json({ ok: true, player });
-});
-
-/**
- * creates a new game
- * @apiParam {Object} playerId - the player id
- * @apiParam {String} gameId - the game id
- */
-router.delete('/:playerId', (req, res, next) => {
-    const { gameId } = req.body;
-    const { playerId } = req.params;
-
-    const game = Game.getById(gameId);
-    game.removePlayer(playerId);
-
-    res.json({ ok: true });
 });

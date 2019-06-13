@@ -19,6 +19,41 @@ router.get('/:gameId/players/:playerId', (req, res) => {
   }
 });
 
+/**
+ * modifies the score
+ * @apiParam {Object} playerId - the player id
+ * @apiParam {String} gameId - the game id
+ * @apiParam {Number} by
+ * @apiReturns {Object} response
+ * @apiReturns {Boolean} response.ok
+ * @apiReturns {Object} response.player
+ */
+router.put('/:gameId/players/:playerId', (req, res, next) => {
+  const { by } = req.body;
+  const { playerId, gameId } = req.params;
+
+  const game = Game.getById(gameId);
+  const player = game.incrementPlayerScore(playerId, by);
+
+  res.json({ ok: true, player });
+});
+
+/**
+ * repoves the player from the game
+ * @apiParam {Object} playerId - the player id
+ * @apiParam {String} gameId - the game id
+ * @apiReturns {Boolean} response.ok
+ */
+router.delete('/:gameId/players/:playerId', (req, res, next) => {
+  const { playerId, gameId } = req.params;
+
+  const game = Game.getById(gameId);
+  game.removePlayer(playerId);
+
+  res.json({ ok: true });
+});
+
+
 router.use('/players', playersRoute);
 
 /**
