@@ -2,12 +2,13 @@ import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
 import PlayerScore from './PlayerScore';
+import { PlayerI } from '../../types/Player';
 
 const ScoreModifyButton: React.FC<{
     playerId: string;
     gameId: string;
     direction: 'positive' | 'negative';
-    onSuccess: (player: object) => void;
+    onSuccess: (player: PlayerI) => void;
 }> = (props) => {
     const onClick: VoidFunction = async () => {
         const res = await apiAxios.put(`/games/${props.gameId}/players/${props.playerId}`, {
@@ -30,7 +31,14 @@ const Player: React.FC<
     const gameId = props.match.params.gameId;
     const playerId = props.match.params.playerId;
 
-    const [player, setPlayer] = React.useState<any>(null);
+    const [player, setPlayer] = React.useState<PlayerI>({
+        name: '',
+        id: '',
+        score: {
+            rank: 0,
+            stars: 0,
+        },
+    });
     const [isLoading, setIsLoading] = React.useState(false);
 
     React.useEffect(() => {

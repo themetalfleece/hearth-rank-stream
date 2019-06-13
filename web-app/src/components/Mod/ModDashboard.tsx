@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
 import { PlayersTable } from '../Player/PlayersTable';
+import { GameI } from '../../types/Game';
 
 const NewPlayerInput: React.FC<{
     gameId: string;
@@ -47,7 +48,10 @@ const ModDashboard: React.FC<
 
     const gameId = props.match.params.id;
 
-    const [game, setGame] = React.useState<any>(null);
+    const [game, setGame] = React.useState<GameI>({
+        id: '',
+        players: [],
+    });
 
     // fetch the game data and set them
     const getGame = React.useCallback(async () => {

@@ -1,9 +1,10 @@
 import React from 'react';
 import PlayerScore from './PlayerScore';
 import clone from 'clone';
+import { PlayerI } from '../../types/Player';
 
 export const PlayersTable: React.FC<{
-    players: any[];
+    players: PlayerI[];
     gameId: string;
     onKick?: (playerId: string) => void;
 }> = (props) => {
@@ -26,7 +27,7 @@ export const PlayersTable: React.FC<{
                             if (p1.score.stars > p2.score.stars) { return -1; }
                             return 1;
                         })
-                        .map((player: any) => <tr key={player.id}>
+                        .map((player) => <tr key={player.id}>
                             <td><PlayerScore score={player.score} /></td>
                             <td>
                                 <a href={`/games/${props.gameId}/players/${player.id}`} target='_blank' rel="noopener noreferrer">
