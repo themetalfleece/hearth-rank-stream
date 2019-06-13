@@ -1,5 +1,6 @@
 import React from 'react';
 import PlayerScore from './PlayerScore';
+import clone from 'clone';
 
 export const PlayersTable: React.FC<{
     players: any[];
@@ -17,22 +18,30 @@ export const PlayersTable: React.FC<{
             </thead>
             <tbody>
                 {
-                    props.players.map((player: any) => <tr key={player.id}>
-                        <td><PlayerScore score={player.score} /></td>
-                        <td>
-                            <a href={`/games/${props.gameId}/players/${player.id}`} target='_blank' rel="noopener noreferrer">
-                                {player.name}
-                            </a>
-                        </td>
-                        {
-                            props.onKick ?
-                                <td
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={() => props.onKick && props.onKick(player.id)}
-                                ><span role="img" aria-label="kick">🚫</span></td>
-                                : null
-                        }
-                    </tr>)
+                    clone(props.players)
+                        .sort((p1, p2) => {
+                            if (p1.score.rank > p2.score.rank) { return 1; }
+                            if (p1.score.rank < p2.score.rank) { return -1; }
+                            if (p1.score.stars < p2.score.stars) { return 1; }
+                            if (p1.score.stars > p2.score.stars) { return -1; }
+                            return 1;
+                        })
+                        .map((player: any) => <tr key={player.id}>
+                            <td><PlayerScore score={player.score} /></td>
+                            <td>
+                                <a href={`/games/${props.gameId}/players/${player.id}`} target='_blank' rel="noopener noreferrer">
+                                    {player.name}
+                                </a>
+                            </td>
+                            {
+                                props.onKick ?
+                                    <td
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => props.onKick && props.onKick(player.id)}
+                                    ><span role="img" aria-label="kick">🚫</span></td>
+                                    : null
+                            }
+                        </tr>)
                 }
             </tbody>
         </table>
