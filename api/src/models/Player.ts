@@ -30,7 +30,7 @@ export class Player {
             throw new Error(`By must be 1 or -1`);
         }
 
-        if (this.score.rank === 0) {
+        if (this.score.rank === 0 && by > 0) {
             return;
         }
 

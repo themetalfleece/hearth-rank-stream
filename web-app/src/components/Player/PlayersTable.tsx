@@ -37,11 +37,13 @@ export const PlayersTable: React.FC<{
                 {
                     players
                         .sort((p1, p2) => {
-                            if (p1.score.rank > p2.score.rank) { return 1; }
-                            if (p1.score.rank < p2.score.rank) { return -1; }
-                            if (p1.score.stars < p2.score.stars) { return 1; }
-                            if (p1.score.stars > p2.score.stars) { return -1; }
-                            return 1;
+                            if (p1.score.rank !== p2.score.rank) {
+                                return p1.score.rank > p2.score.rank ? 1 : -1;
+                            }
+                            if (p1.score.stars !== p2.score.stars) {
+                                return p1.score.stars > p2.score.stars ? -1 : 1;
+                            }
+                            return p1.id > p2.id ? 1 : -1;
                         })
                         .map((player) => <tr key={player.id}>
                             <td><PlayerScore score={player.score} /></td>
