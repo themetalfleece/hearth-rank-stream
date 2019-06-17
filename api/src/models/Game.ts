@@ -29,7 +29,11 @@ export class Game {
     }
 
     public removePlayer(playerId: string) {
-        this.players = this.players.filter((player) => player.id !== playerId);
+        const playerToRemove = this.players.find((player) => player.id === playerId);
+        if (!playerToRemove) {
+            throw new Error(`Player not found`);
+        }
+        this.players = this.players.filter((player) => player !== playerToRemove);
     }
 
     public incrementPlayerScore(playerId: string, by: number) {

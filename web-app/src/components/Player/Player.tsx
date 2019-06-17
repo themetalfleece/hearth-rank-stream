@@ -40,6 +40,7 @@ const Player: React.FC<
         },
     });
     const [isLoading, setIsLoading] = React.useState(false);
+    const [hasLeft, setHasLeft] = React.useState(false);
 
     React.useEffect(() => {
         const fetchPlayer = async () => {
@@ -57,8 +58,17 @@ const Player: React.FC<
         fetchPlayer();
     }, [gameId, playerId]);
 
+    const leaveGame = async () => {
+        await apiAxios.delete(`/games/${gameId}/players/${playerId}`);
+        setHasLeft(true);
+    }
+
+    if (hasLeft) {
+        return <>Thanks for playing!</>;
+    }
+
     let playerElement: JSX.Element = <div > Loading </div>;
-    if (player) {
+    if (player.id) {
         playerElement = <>
             Welcome {player.name}
             <br />
@@ -76,6 +86,8 @@ const Player: React.FC<
                 direction='positive'
                 onSuccess={(player) => setPlayer(player)}
             />
+            <br />
+            <button onClick={leaveGame}>Leave Game</button>
         </>
     }
     if (!player && !isLoading) {
