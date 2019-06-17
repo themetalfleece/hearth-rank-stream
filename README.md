@@ -9,7 +9,7 @@
 * Clone this repo
 * Download [node.js](https://nodejs.org/en/download/)
 * Install [yarn](https://yarnpkg.com/lang/en/docs/install/)
-* Install nodemon and ts-node with `yarn global add nodemon ts-node`
+* Install nodemon and ts-node with `yarn global add nodemon typescript ts-node`
 * Navigate to the `api` directory inside the repo with `cd api`
 * Run `yarn` to install the dependencies
 * Navigate to the `web-app` directory inside the repo with `cd web-app`

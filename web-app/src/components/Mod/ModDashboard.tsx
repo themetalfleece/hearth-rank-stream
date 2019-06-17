@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
-import { PlayersTable } from '../Player/PlayersTable';
+import PlayersTable from '../Player/PlayersTable';
 import { GameI } from '../../types/Game';
 
 const NewPlayerInput: React.FC<{

@@ -3,11 +3,23 @@ import PlayerScore from './PlayerScore';
 import { PlayerI } from '../../types/Player';
 import openSocket from 'socket.io-client';
 import { GameI } from '../../types/Game';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import qs from 'query-string';
 
-export const PlayersTable: React.FC<{
+interface playerTablePropsI extends RouteComponentProps<{
+    forStream: string;
+    maxColumns: string;
+}> {
     gameId: string;
     onKick?: (playerId: string) => void;
-}> = (props) => {
+}
+
+const PlayersTable: React.FC<playerTablePropsI> = (props) => {
+
+    const forStream = qs.parse(props.location.search).forStream;
+    // parse it and then cast it to number or undefined
+    const _maxColumns = qs.parse(props.location.search).maxColumns;
+    const maxColumns = _maxColumns ? +_maxColumns : undefined;
 
     const [players, setPlayers] = React.useState<PlayerI[]>([]);
 
@@ -24,8 +36,19 @@ export const PlayersTable: React.FC<{
         }
     }, [props.gameId]);
 
+    let tableStyle: React.CSSProperties = {};
+    if (forStream === 'true') {
+        tableStyle = {
+            fontSize: '28px',
+            WebkitTextFillColor: 'white',
+            WebkitTextStrokeWidth: '1px',
+            WebkitTextStrokeColor: 'black',
+            backgroundColor: `rgba(0,0,0,.1)`,
+        }
+    }
+
     return (
-        <table>
+        <table style={tableStyle}>
             <thead>
                 <tr>
                     <th>Rank</th>
@@ -36,6 +59,7 @@ export const PlayersTable: React.FC<{
             <tbody>
                 {
                     players
+                        .slice(0, maxColumns)
                         .sort((p1, p2) => {
                             if (p1.score.rank !== p2.score.rank) {
                                 return p1.score.rank > p2.score.rank ? 1 : -1;
@@ -66,3 +90,5 @@ export const PlayersTable: React.FC<{
         </table>
     );
 }
+
+export default withRouter(PlayersTable);
