@@ -3,6 +3,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
 import PlayersTable from '../Player/PlayersTable';
 import { GameI } from '../../types/Game';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 const NewPlayerInput: React.FC<{
     gameId: string;
@@ -77,7 +78,9 @@ const ModDashboard: React.FC<
             />
         }
         gameElement = <div>
-            game id: {game.id}
+            <CopyToClipboard text={`${window.location.host}/games/${gameId}?forStream=true&maxColumns=10`}>
+                <button>Copy OBS link</button>
+            </CopyToClipboard>
             <br />
             Players:
             {playerTableElement}
