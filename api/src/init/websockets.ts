@@ -1,27 +1,31 @@
 import { Server } from 'http';
-import * as ws from 'socket.io';
-import { Game } from '../models/Game';
+import * as socket from 'socket.io';
+import { Games } from '../models/Games';
 
-let io: ws.Server;
+export const ws: {
+    io: socket.Server;
+} = {
+    io: null,
+};
 
 export const init = (server?: Server) => {
-    if (io) {
-        return io;
+    if (ws.io) {
+        return ws;
     }
     if (!server) {
         throw new Error(`Cannot init websockets without the server param`);
     }
-    io = ws(server);
+    ws.io = socket(server);
     try {
-        io.on('connection', (socket) => {
-            socket.on('join-game', (data) => {
+        ws.io.on('connection', (socket) => {
+            socket.on('join-game', async (data) => {
                 if (data && data.gameId) {
                     // the the room by gameId
                     socket.join(data && data.gameId);
 
                     // emit the current game info
                     socket.emit('game-info', {
-                        game: Game.getById(data.gameId),
+                        game: await Games.findOne({ _id: data.gameId }),
                     });
                 }
             });

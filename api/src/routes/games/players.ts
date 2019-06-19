@@ -1,7 +1,7 @@
 import * as express from 'express';
-import { init as getWs } from '../../init/websockets';
-import { Game } from '../../models/Game';
-import { Player } from '../../models/Player';
+import { ws } from '../../init/websockets';
+import { Games } from '../../models/Games';
+import { IPlayerAttributes, } from '../../models/Players';
 
 export const router = express.Router({ mergeParams: true });
 
@@ -14,18 +14,21 @@ export const router = express.Router({ mergeParams: true });
  * @apiParam {Number} player.score.rank - the player's rank
  * @apiParam {Number} player.score.stars - the player's stars
  */
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
     const { gameId } = req.body;
 
-    const name: Player['name'] = req.body.player.name;
-    const score: Player['score'] = req.body.player.score;
-    const player = new Player(name, score);
+    const player: IPlayerAttributes = {
+        name: req.body.player && req.body.player.name,
+        score: req.body.player && req.body.player.score || {
+            rank: 4,
+            stars: 0,
+        },
+    };
 
-    const game = Game.getById(gameId);
+    const game = await Games.findOne({ _id: gameId });
     game.addPlayer(player);
 
-    const io = getWs();
-    io.to(gameId).emit('game-info', { game });
+    ws.io.to(gameId).emit('game-info', { game });
 
     res.json({ ok: true, player });
 });

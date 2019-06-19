@@ -33,7 +33,7 @@ const Player: React.FC<
 
     const [player, setPlayer] = React.useState<PlayerI>({
         name: '',
-        id: '',
+        _id: '',
         score: {
             rank: 0,
             stars: 0,
@@ -68,7 +68,7 @@ const Player: React.FC<
     }
 
     let playerElement: JSX.Element = <div > Loading </div>;
-    if (player.id) {
+    if (player._id) {
         playerElement = <>
             Welcome {player.name}
             <br />

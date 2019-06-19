@@ -50,7 +50,7 @@ const ModDashboard: React.FC<
     const gameId = props.match.params.id;
 
     const [game, setGame] = React.useState<GameI>({
-        id: '',
+        _id: '',
         players: [],
     });
 
@@ -68,21 +68,22 @@ const ModDashboard: React.FC<
     let gameElement: JSX.Element = <div> Loading </div>;
     if (game) {
         let playerTableElement: JSX.Element = <></>;
-        if (game.id) {
+        let copyToClipboardElement: JSX.Element = <></>;
+        if (game._id) {
             playerTableElement = <PlayersTable
-                gameId={game.id}
+                gameId={game._id}
                 onKick={async (playerId) => {
                     await apiAxios.delete(`/games/${gameId}/players/${playerId}`);
                     getGame();
                 }}
-            />
+            />;
+            copyToClipboardElement = <CopyToClipboard text={`${window.location.host}/games/${gameId}?forStream=true&maxColumns=10`}>
+                <button>Copy OBS link</button>
+            </CopyToClipboard>;
         }
         gameElement = <div>
-            <CopyToClipboard text={`${window.location.host}/games/${gameId}?forStream=true&maxColumns=10`}>
-                <button>Copy OBS link</button>
-            </CopyToClipboard>
+            {copyToClipboardElement}
             <br />
-            Players:
             {playerTableElement}
         </div>
     }

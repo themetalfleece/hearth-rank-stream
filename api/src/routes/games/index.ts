@@ -1,6 +1,6 @@
 import * as express from 'express';
-import { init as getWs } from '../../init/websockets';
-import { Game } from '../../models/Game';
+import { ws } from '../../init/websockets';
+import { Games } from '../../models/Games';
 import { router as playersRoute } from './players';
 
 export const router = express.Router();
@@ -8,12 +8,12 @@ export const router = express.Router();
 /**
  * gets player info
  */
-router.get('/:gameId/players/:playerId', (req, res) => {
+router.get('/:gameId/players/:playerId', async (req, res) => {
   const { playerId, gameId } = req.params;
 
   if (gameId) {
-    const game = Game.getById(gameId);
-    const player = game.players.find((player) => player.id === playerId);
+    const game = await Games.findOne({ _id: gameId });
+    const player = game.players.find((player) => player._id.equals(playerId));
     if (!player) {
       throw new Error(`Player not found`);
     }
@@ -32,15 +32,14 @@ router.get('/:gameId/players/:playerId', (req, res) => {
  * @apiReturns {Boolean} response.ok
  * @apiReturns {Object} response.player
  */
-router.put('/:gameId/players/:playerId', (req, res, next) => {
+router.put('/:gameId/players/:playerId', async (req, res, next) => {
   const { by } = req.body;
   const { playerId, gameId } = req.params;
 
-  const game = Game.getById(gameId);
-  const player = game.incrementPlayerScore(playerId, by);
+  const game = await Games.findOne({ _id: gameId });
+  const player = await game.incrementPlayerScore(playerId, by);
 
-  const io = getWs();
-  io.to(gameId).emit('game-info', { game });
+  ws.io.to(gameId).emit('game-info', { game });
 
   res.json({ ok: true, player });
 });
@@ -51,14 +50,13 @@ router.put('/:gameId/players/:playerId', (req, res, next) => {
  * @apiParam {String} gameId - the game id
  * @apiReturns {Boolean} response.ok
  */
-router.delete('/:gameId/players/:playerId', (req, res, next) => {
+router.delete('/:gameId/players/:playerId', async (req, res, next) => {
   const { playerId, gameId } = req.params;
 
-  const game = Game.getById(gameId);
+  const game = await Games.findOne({ _id: gameId });
   game.removePlayer(playerId);
 
-  const io = getWs();
-  io.to(gameId).emit('game-info', { game });
+  ws.io.to(gameId).emit('game-info', { game });
 
   res.json({ ok: true });
 });
@@ -70,11 +68,11 @@ router.use('/players', playersRoute);
  * gets the game of the given id
  * @apiParam {String} id - the game id
  */
-router.get('/:id', (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   res.send({
     ok: true,
-    game: Game.getById(id),
+    game: await Games.findOne({ _id: id }),
   });
 });
 
@@ -82,7 +80,7 @@ router.get('/:id', (req, res, next) => {
  * creates a new game
  * @apiParam {String} id - the game id
  */
-router.post('/', (req, res, next) => {
-  const game = new Game();
-  res.json({ ok: true, id: game.id });
+router.post('/', async (req, res, next) => {
+  const game = await Games.create({});
+  res.json({ ok: true, id: game._id });
 });

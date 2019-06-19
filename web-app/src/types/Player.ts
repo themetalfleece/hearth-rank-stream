@@ -1,6 +1,6 @@
 export interface PlayerI {
     name: string;
-    id: string;
+    _id: string;
     score: {
         rank: number;
         stars: number;

@@ -67,12 +67,12 @@ const PlayersTable: React.FC<playerTablePropsI> = (props) => {
                             if (p1.score.stars !== p2.score.stars) {
                                 return p1.score.stars > p2.score.stars ? -1 : 1;
                             }
-                            return p1.id > p2.id ? 1 : -1;
+                            return p1._id > p2._id ? 1 : -1;
                         })
-                        .map((player) => <tr key={player.id}>
+                        .map((player) => <tr key={player._id}>
                             <td><PlayerScore score={player.score} /></td>
                             <td>
-                                <a href={`/games/${props.gameId}/players/${player.id}`} target='_blank' rel="noopener noreferrer">
+                                <a href={`/games/${props.gameId}/players/${player._id}`} target='_blank' rel="noopener noreferrer">
                                     {player.name}
                                 </a>
                             </td>
@@ -80,7 +80,7 @@ const PlayersTable: React.FC<playerTablePropsI> = (props) => {
                                 props.onKick ?
                                     <td
                                         style={{ cursor: 'pointer' }}
-                                        onClick={() => props.onKick && props.onKick(player.id)}
+                                        onClick={() => props.onKick && props.onKick(player._id)}
                                     ><span role="img" aria-label="kick">🚫</span></td>
                                     : null
                             }
