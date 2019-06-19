@@ -4,6 +4,7 @@ import { apiAxios } from '../../utils/axios';
 import PlayersTable from '../Player/PlayersTable';
 import { GameI } from '../../types/Game';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import { Button } from 'react-bootstrap';
 
 const NewPlayerInput: React.FC<{
     gameId: string;
@@ -78,28 +79,25 @@ const ModDashboard: React.FC<
                 }}
             />;
             copyToClipboardElement = <CopyToClipboard text={`${window.location.host}/games/${gameId}?forStream=true&maxColumns=10`}>
-                <button>Copy OBS link</button>
+                <Button variant="warning">Copy OBS link</Button>
             </CopyToClipboard>;
         }
         gameElement = <div>
             {copyToClipboardElement}
             <br />
             {playerTableElement}
+            <br />
+            Add Player
+                <NewPlayerInput
+                gameId={gameId}
+                onSuccess={getGame}
+            />
         </div>
     }
 
     return (
         <>
-            <div>
-                {gameElement}
-            </div>
-            <div>
-                Add Player
-                <NewPlayerInput
-                    gameId={gameId}
-                    onSuccess={getGame}
-                />
-            </div>
+            {gameElement}
         </>
     )
 }

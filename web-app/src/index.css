@@ -23,7 +23,7 @@ td, th {
   padding: 8px;
 }
 
-a, a:visited {
-  color: initial;
-  text-decoration: none;
+a, a:hover, a:visited, a:focus {
+  color: initial !important;
+  text-decoration: none !important;
 }

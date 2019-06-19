@@ -73,7 +73,9 @@ const PlayersTable: React.FC<playerTablePropsI> = (props) => {
                             <td><PlayerScore score={player.score} /></td>
                             <td>
                                 <a href={`/games/${props.gameId}/players/${player._id}`} target='_blank' rel="noopener noreferrer">
-                                    {player.name}
+                                    <div style={{ width: '100%', height: '100%' }}>
+                                        {player.name}
+                                    </div>
                                 </a>
                             </td>
                             {

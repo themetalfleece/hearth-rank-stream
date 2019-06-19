@@ -3,6 +3,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
 import PlayerScore from './PlayerScore';
 import { PlayerI } from '../../types/Player';
+import { Button, ButtonGroup, Container, Row, Col } from 'react-bootstrap';
 
 const ScoreModifyButton: React.FC<{
     disabled: boolean;
@@ -19,7 +20,7 @@ const ScoreModifyButton: React.FC<{
     };
 
     return (
-        <button disabled={props.disabled} onClick={onClick}>{props.direction === 'positive' ? '+' : '-'}</button>
+        <Button variant="dark" size="lg" disabled={props.disabled} onClick={onClick}>{props.direction === 'positive' ? '+' : '-'}</Button>
     );
 };
 
@@ -69,29 +70,44 @@ const Player: React.FC<
     }
 
     let playerElement: JSX.Element = <div > Loading </div>;
+    const rowStyle: React.CSSProperties = { padding: '3px' };
+    const rowClassName = "justify-content-center";
     if (player._id) {
-        playerElement = <>
-            Welcome {player.name}
-            <br />
-            <PlayerScore score={player.score} />
-            <br />
-            <ScoreModifyButton
-                disabled={isLoading}
-                gameId={gameId}
-                playerId={playerId}
-                direction='negative'
-                onSuccess={(player) => setPlayer(player)}
-            />
-            <ScoreModifyButton
-                disabled={isLoading}
-                gameId={gameId}
-                playerId={playerId}
-                direction='positive'
-                onSuccess={(player) => setPlayer(player)}
-            />
-            <br />
-            <button disabled={isLoading} onClick={leaveGame}>Leave Game</button>
-        </>
+        playerElement = <Container>
+            <Row style={rowStyle} className={rowClassName}>
+                <Col xs='auto'>
+                    Welcome {player.name}
+                </Col>
+            </Row>
+            <Row style={rowStyle} className={rowClassName}>
+                <Col xs='auto'>
+                    <PlayerScore score={player.score} />
+                </Col>
+            </Row>
+            <Row style={rowStyle} className={rowClassName}>
+                <Col xs='auto'>
+                    <ButtonGroup>
+                        <ScoreModifyButton
+                            disabled={isLoading}
+                            gameId={gameId}
+                            playerId={playerId}
+                            direction='negative'
+                            onSuccess={(player) => setPlayer(player)}
+                        />
+                        <ScoreModifyButton
+                            disabled={isLoading}
+                            gameId={gameId}
+                            playerId={playerId}
+                            direction='positive'
+                            onSuccess={(player) => setPlayer(player)}
+                        />
+                    </ButtonGroup>
+                </Col>
+            </Row>
+            <Row style={rowStyle} className={rowClassName}>
+                <Button variant='danger' size="sm" disabled={isLoading} onClick={leaveGame}>Leave Game</Button>
+            </Row>
+        </Container>
     }
     if (!player && !isLoading) {
         playerElement = <span> This player cannot be found </span>
