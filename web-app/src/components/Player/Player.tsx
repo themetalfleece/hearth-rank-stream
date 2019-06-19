@@ -5,6 +5,7 @@ import PlayerScore from './PlayerScore';
 import { PlayerI } from '../../types/Player';
 
 const ScoreModifyButton: React.FC<{
+    disabled: boolean;
     playerId: string;
     gameId: string;
     direction: 'positive' | 'negative';
@@ -18,7 +19,7 @@ const ScoreModifyButton: React.FC<{
     };
 
     return (
-        <button onClick={onClick}>{props.direction === 'positive' ? '+' : '-'}</button>
+        <button disabled={props.disabled} onClick={onClick}>{props.direction === 'positive' ? '+' : '-'}</button>
     );
 };
 
@@ -75,19 +76,21 @@ const Player: React.FC<
             <PlayerScore score={player.score} />
             <br />
             <ScoreModifyButton
+                disabled={isLoading}
                 gameId={gameId}
                 playerId={playerId}
                 direction='negative'
                 onSuccess={(player) => setPlayer(player)}
             />
             <ScoreModifyButton
+                disabled={isLoading}
                 gameId={gameId}
                 playerId={playerId}
                 direction='positive'
                 onSuccess={(player) => setPlayer(player)}
             />
             <br />
-            <button onClick={leaveGame}>Leave Game</button>
+            <button disabled={isLoading} onClick={leaveGame}>Leave Game</button>
         </>
     }
     if (!player && !isLoading) {

@@ -59,7 +59,6 @@ const PlayersTable: React.FC<playerTablePropsI> = (props) => {
             <tbody>
                 {
                     players
-                        .slice(0, maxColumns)
                         .sort((p1, p2) => {
                             if (p1.score.rank !== p2.score.rank) {
                                 return p1.score.rank > p2.score.rank ? 1 : -1;
@@ -69,6 +68,7 @@ const PlayersTable: React.FC<playerTablePropsI> = (props) => {
                             }
                             return p1._id > p2._id ? 1 : -1;
                         })
+                        .slice(0, maxColumns)
                         .map((player) => <tr key={player._id}>
                             <td><PlayerScore score={player.score} /></td>
                             <td>
