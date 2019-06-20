@@ -3,6 +3,7 @@ import { Document, Model, Schema } from 'mongoose';
 import { IUser, IUserAttributes, UserSchema } from './Users';
 
 export interface ILobbyAttributes {
+    name: string;
     users: IUser[];
 }
 
@@ -17,6 +18,10 @@ export interface ILobby extends ILobbyDocument {
 export interface ILobbyModel extends Model<ILobby> { }
 
 const LobbySchema: Schema = new Schema({
+    name: {
+        type: String,
+        required: true,
+    },
     users: {
         type: [UserSchema],
         required: true,

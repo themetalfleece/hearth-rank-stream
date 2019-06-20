@@ -52,6 +52,7 @@ const ModDashboard: React.FC<
 
     const [lobby, setLobby] = React.useState<LobbyI>({
         _id: '',
+        name: '',
         users: [],
     });
 
@@ -68,9 +69,13 @@ const ModDashboard: React.FC<
 
     let lobbyElement: JSX.Element = <div> Loading </div>;
     if (lobby) {
-        let userTableElement: JSX.Element = <></>;
-        let copyToClipboardElement: JSX.Element = <></>;
+        let userTableElement = <></>;
+        let copyToClipboardElement = <></>;
+        let addUserElement = <></>;
+        let lobbyNameElement = <></>;
+
         if (lobby._id) {
+            lobbyNameElement = <span> Welcome to {lobby.name} </span>
             userTableElement = <UserTable
                 lobbyId={lobby._id}
                 onKick={async (userId) => {
@@ -78,20 +83,27 @@ const ModDashboard: React.FC<
                     getLobby();
                 }}
             />;
+
             copyToClipboardElement = <CopyToClipboard text={`${window.location.host}/lobbies/${lobbyId}?forStream=true&maxColumns=10`}>
                 <Button variant="warning">Copy OBS link</Button>
             </CopyToClipboard>;
+
+            addUserElement = <>
+                Add User
+                <NewUserInput
+                    lobbyId={lobbyId}
+                    onSuccess={getLobby}
+                />
+            </>
         }
         lobbyElement = <div>
+            {lobbyNameElement}
+            <br />
             {copyToClipboardElement}
             <br />
             {userTableElement}
             <br />
-            Add User
-                <NewUserInput
-                lobbyId={lobbyId}
-                onSuccess={getLobby}
-            />
+            {addUserElement}
         </div>
     }
 

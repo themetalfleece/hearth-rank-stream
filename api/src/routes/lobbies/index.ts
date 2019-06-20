@@ -17,7 +17,13 @@ router.get('/:lobbyId/users/:userId', async (req, res) => {
     if (!user) {
       throw new Error(`User not found`);
     }
-    return res.json({ ok: true, user });
+    return res.json({
+      ok: true,
+      user,
+      lobby: {
+        name: lobby.name,
+      },
+    });
   } else {
     throw new Error(`No lobbyId passed`);
   }
@@ -79,8 +85,10 @@ router.get('/:id', async (req, res, next) => {
 /**
  * creates a new lobby
  * @apiParam {String} id - the lobby id
+ * @apiParam {String} name - the lobby name
  */
 router.post('/', async (req, res, next) => {
-  const lobby = await Lobbies.create({});
+  const { name } = req.body;
+  const lobby = await Lobbies.create({ name });
   res.json({ ok: true, id: lobby._id });
 });

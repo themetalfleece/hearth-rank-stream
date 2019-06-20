@@ -4,6 +4,7 @@ import { apiAxios } from '../../utils/axios';
 import UserScore from './UserScore';
 import { UserI } from '../../types/User';
 import { Button, ButtonGroup, Container, Row, Col } from 'react-bootstrap';
+import { LobbyI } from '../../types/Lobby';
 
 const ScoreModifyButton: React.FC<{
     disabled: boolean;
@@ -43,6 +44,7 @@ const User: React.FC<
     });
     const [isLoading, setIsLoading] = React.useState(false);
     const [hasLeft, setHasLeft] = React.useState(false);
+    const [lobby, setLobby] = React.useState<Partial<LobbyI>>({ name: '' });
 
     React.useEffect(() => {
         const fetchUser = async () => {
@@ -51,6 +53,7 @@ const User: React.FC<
                 const { data } = await apiAxios.get(`/lobbies/${lobbyId}/users/${userId}`);
 
                 setUser(data.user);
+                setLobby(data.lobby);
                 setIsLoading(false);
             } catch (err) {
                 setIsLoading(false);
@@ -76,7 +79,7 @@ const User: React.FC<
         userElement = <Container>
             <Row style={rowStyle} className={rowClassName}>
                 <Col xs='auto'>
-                    Welcome {user.name}
+                    Welcome to {lobby.name}, {user.name}!
                 </Col>
             </Row>
             <Row style={rowStyle} className={rowClassName}>
