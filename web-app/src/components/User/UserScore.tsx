@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PlayerScore: React.FC<{
+const UserScore: React.FC<{
     score: {
         stars: number;
         rank: number;
@@ -13,4 +13,4 @@ const PlayerScore: React.FC<{
     )
 }
 
-export default PlayerScore;
+export default UserScore;

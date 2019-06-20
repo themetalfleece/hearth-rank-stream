@@ -1,34 +1,34 @@
 import React from 'react';
-import PlayerScore from './PlayerScore';
-import { PlayerI } from '../../types/Player';
+import UserScore from './UserScore';
+import { UserI } from '../../types/User';
 import { openSocket } from '../../utils/websockets';
 import { LobbyI } from '../../types/Lobby';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import qs from 'query-string';
 
-interface playerTablePropsI extends RouteComponentProps<{
+interface userTablePropsI extends RouteComponentProps<{
     forStream: string;
     maxColumns: string;
 }> {
     lobbyId: string;
-    onKick?: (playerId: string) => void;
+    onKick?: (userId: string) => void;
 }
 
-const PlayersTable: React.FC<playerTablePropsI> = (props) => {
+const UserTable: React.FC<userTablePropsI> = (props) => {
 
     const forStream = qs.parse(props.location.search).forStream;
     // parse it and then cast it to number or undefined
     const _maxColumns = qs.parse(props.location.search).maxColumns;
     const maxColumns = _maxColumns ? +_maxColumns : undefined;
 
-    const [players, setPlayers] = React.useState<PlayerI[]>([]);
+    const [users, setUsers] = React.useState<UserI[]>([]);
 
     React.useEffect(() => {
         const socket = openSocket();
         socket.emit('join-lobby', { lobbyId: props.lobbyId });
 
         socket.on('lobby-info', (data: { lobby: LobbyI }) => {
-            setPlayers(data.lobby.players);
+            setUsers(data.lobby.users);
         });
 
         return () => {
@@ -58,7 +58,7 @@ const PlayersTable: React.FC<playerTablePropsI> = (props) => {
             </thead>
             <tbody>
                 {
-                    players
+                    users
                         .sort((p1, p2) => {
                             if (p1.score.rank !== p2.score.rank) {
                                 return p1.score.rank > p2.score.rank ? 1 : -1;
@@ -69,12 +69,12 @@ const PlayersTable: React.FC<playerTablePropsI> = (props) => {
                             return p1._id > p2._id ? 1 : -1;
                         })
                         .slice(0, maxColumns)
-                        .map((player) => <tr key={player._id}>
-                            <td><PlayerScore score={player.score} /></td>
+                        .map((user) => <tr key={user._id}>
+                            <td><UserScore score={user.score} /></td>
                             <td>
-                                <a href={`/lobbies/${props.lobbyId}/players/${player._id}`} target='_blank' rel="noopener noreferrer">
+                                <a href={`/lobbies/${props.lobbyId}/users/${user._id}`} target='_blank' rel="noopener noreferrer">
                                     <div style={{ width: '100%', height: '100%' }}>
-                                        {player.name}
+                                        {user.name}
                                     </div>
                                 </a>
                             </td>
@@ -82,7 +82,7 @@ const PlayersTable: React.FC<playerTablePropsI> = (props) => {
                                 props.onKick ?
                                     <td
                                         style={{ cursor: 'pointer' }}
-                                        onClick={() => props.onKick && props.onKick(player._id)}
+                                        onClick={() => props.onKick && props.onKick(user._id)}
                                     ><span role="img" aria-label="kick">🚫</span></td>
                                     : null
                             }
@@ -93,4 +93,4 @@ const PlayersTable: React.FC<playerTablePropsI> = (props) => {
     );
 }
 
-export default withRouter(PlayersTable);
+export default withRouter(UserTable);

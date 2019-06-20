@@ -1,22 +1,22 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
-import PlayerScore from './PlayerScore';
-import { PlayerI } from '../../types/Player';
+import UserScore from './UserScore';
+import { UserI } from '../../types/User';
 import { Button, ButtonGroup, Container, Row, Col } from 'react-bootstrap';
 
 const ScoreModifyButton: React.FC<{
     disabled: boolean;
-    playerId: string;
+    userId: string;
     lobbyId: string;
     direction: 'positive' | 'negative';
-    onSuccess: (player: PlayerI) => void;
+    onSuccess: (user: UserI) => void;
 }> = (props) => {
     const onClick: VoidFunction = async () => {
-        const res = await apiAxios.put(`/lobbies/${props.lobbyId}/players/${props.playerId}`, {
+        const res = await apiAxios.put(`/lobbies/${props.lobbyId}/users/${props.userId}`, {
             by: props.direction === 'positive' ? 1 : -1,
         });
-        props.onSuccess(res.data.player);
+        props.onSuccess(res.data.user);
     };
 
     return (
@@ -24,16 +24,16 @@ const ScoreModifyButton: React.FC<{
     );
 };
 
-const Player: React.FC<
+const User: React.FC<
     RouteComponentProps<{
         lobbyId: string;
-        playerId: string;
+        userId: string;
     }>
 > = (props) => {
     const lobbyId = props.match.params.lobbyId;
-    const playerId = props.match.params.playerId;
+    const userId = props.match.params.userId;
 
-    const [player, setPlayer] = React.useState<PlayerI>({
+    const [user, setUser] = React.useState<UserI>({
         name: '',
         _id: '',
         score: {
@@ -45,23 +45,23 @@ const Player: React.FC<
     const [hasLeft, setHasLeft] = React.useState(false);
 
     React.useEffect(() => {
-        const fetchPlayer = async () => {
+        const fetchUser = async () => {
             setIsLoading(true);
             try {
-                const { data } = await apiAxios.get(`/lobbies/${lobbyId}/players/${playerId}`);
+                const { data } = await apiAxios.get(`/lobbies/${lobbyId}/users/${userId}`);
 
-                setPlayer(data.player);
+                setUser(data.user);
                 setIsLoading(false);
             } catch (err) {
                 setIsLoading(false);
             }
         }
 
-        fetchPlayer();
-    }, [lobbyId, playerId]);
+        fetchUser();
+    }, [lobbyId, userId]);
 
     const leaveLobby = async () => {
-        await apiAxios.delete(`/lobbies/${lobbyId}/players/${playerId}`);
+        await apiAxios.delete(`/lobbies/${lobbyId}/users/${userId}`);
         setHasLeft(true);
     }
 
@@ -69,19 +69,19 @@ const Player: React.FC<
         return <>Thanks for playing!</>;
     }
 
-    let playerElement: JSX.Element = <div > Loading </div>;
+    let userElement: JSX.Element = <div > Loading </div>;
     const rowStyle: React.CSSProperties = { padding: '3px' };
     const rowClassName = "justify-content-center";
-    if (player._id) {
-        playerElement = <Container>
+    if (user._id) {
+        userElement = <Container>
             <Row style={rowStyle} className={rowClassName}>
                 <Col xs='auto'>
-                    Welcome {player.name}
+                    Welcome {user.name}
                 </Col>
             </Row>
             <Row style={rowStyle} className={rowClassName}>
                 <Col xs='auto'>
-                    <PlayerScore score={player.score} />
+                    <UserScore score={user.score} />
                 </Col>
             </Row>
             <Row style={rowStyle} className={rowClassName}>
@@ -90,16 +90,16 @@ const Player: React.FC<
                         <ScoreModifyButton
                             disabled={isLoading}
                             lobbyId={lobbyId}
-                            playerId={playerId}
+                            userId={userId}
                             direction='negative'
-                            onSuccess={(player) => setPlayer(player)}
+                            onSuccess={(user) => setUser(user)}
                         />
                         <ScoreModifyButton
                             disabled={isLoading}
                             lobbyId={lobbyId}
-                            playerId={playerId}
+                            userId={userId}
                             direction='positive'
-                            onSuccess={(player) => setPlayer(player)}
+                            onSuccess={(user) => setUser(user)}
                         />
                     </ButtonGroup>
                 </Col>
@@ -109,15 +109,15 @@ const Player: React.FC<
             </Row>
         </Container>
     }
-    if (!player && !isLoading) {
-        playerElement = <span> This player cannot be found </span>
+    if (!user && !isLoading) {
+        userElement = <span> This user cannot be found </span>
     }
 
     return (
         <div>
-            {playerElement}
+            {userElement}
         </div>
     )
 }
 
-export default withRouter(Player);
+export default withRouter(User);

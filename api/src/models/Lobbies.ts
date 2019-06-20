@@ -1,61 +1,61 @@
 import * as mongoose from 'mongoose';
 import { Document, Model, Schema } from 'mongoose';
-import { IPlayer, IPlayerAttributes, PlayerSchema } from './Players';
+import { IUser, IUserAttributes, UserSchema } from './Users';
 
 export interface ILobbyAttributes {
-    players: IPlayer[];
+    users: IUser[];
 }
 
 export interface ILobbyDocument extends Document, ILobbyAttributes { }
 
 export interface ILobby extends ILobbyDocument {
-    addPlayer: (player: IPlayerAttributes) => PromiseLike<void>;
-    removePlayer: (playerId: string) => PromiseLike<void>;
-    incrementPlayerScore: (playerId: string, by: number) => PromiseLike<IPlayer>;
+    addUser: (user: IUserAttributes) => PromiseLike<void>;
+    removeUser: (userId: string) => PromiseLike<void>;
+    incrementUserScore: (userId: string, by: number) => PromiseLike<IUser>;
 }
 
 export interface ILobbyModel extends Model<ILobby> { }
 
 const LobbySchema: Schema = new Schema({
-    players: {
-        type: [PlayerSchema],
+    users: {
+        type: [UserSchema],
         required: true,
     },
 });
 
-LobbySchema.methods.addPlayer = async function (player: IPlayerAttributes) {
+LobbySchema.methods.addUser = async function (user: IUserAttributes) {
     const lobby = this as ILobby;
-    this.players.push(player);
+    this.users.push(user);
     await lobby.save();
 };
 
-LobbySchema.methods.removePlayer = async function (playerId: string) {
+LobbySchema.methods.removeUser = async function (userId: string) {
     const lobby = this as ILobby;
 
-    const playerToRemove = lobby.players.find((player) => player._id.equals(playerId));
+    const userToRemove = lobby.users.find((user) => user._id.equals(userId));
 
-    if (!playerToRemove) {
-        throw new Error(`Player not found`);
+    if (!userToRemove) {
+        throw new Error(`User not found`);
     }
 
-    lobby.players = lobby.players.filter((player) => player !== playerToRemove);
+    lobby.users = lobby.users.filter((user) => user !== userToRemove);
 
     await this.save();
 };
 
-LobbySchema.methods.incrementPlayerScore = async function (playerId: string, by: number) {
+LobbySchema.methods.incrementUserScore = async function (userId: string, by: number) {
     const lobby = this as ILobby;
 
-    const player = lobby.players.find((player) => player._id.equals(playerId));
+    const user = lobby.users.find((user) => user._id.equals(userId));
 
-    if (!player) {
-        throw new Error(`Player not found`);
+    if (!user) {
+        throw new Error(`User not found`);
     }
 
-    player.incrementScore(by);
+    user.incrementScore(by);
 
     await this.save();
-    return player;
+    return user;
 };
 
 export const Lobbies = mongoose.model<ILobby, ILobbyModel>('Lobbies', LobbySchema);

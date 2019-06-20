@@ -1,23 +1,23 @@
 import * as express from 'express';
 import { ws } from '../../init/websockets';
 import { Lobbies } from '../../models/Lobbies';
-import { router as playersRoute } from './players';
+import { router as usersRoute } from './users';
 
 export const router = express.Router();
 
 /**
- * gets player info
+ * gets user info
  */
-router.get('/:lobbyId/players/:playerId', async (req, res) => {
-  const { playerId, lobbyId } = req.params;
+router.get('/:lobbyId/users/:userId', async (req, res) => {
+  const { userId, lobbyId } = req.params;
 
   if (lobbyId) {
     const lobby = await Lobbies.findOne({ _id: lobbyId });
-    const player = lobby.players.find((player) => player._id.equals(playerId));
-    if (!player) {
-      throw new Error(`Player not found`);
+    const user = lobby.users.find((user) => user._id.equals(userId));
+    if (!user) {
+      throw new Error(`User not found`);
     }
-    return res.json({ ok: true, player });
+    return res.json({ ok: true, user });
   } else {
     throw new Error(`No lobbyId passed`);
   }
@@ -25,36 +25,36 @@ router.get('/:lobbyId/players/:playerId', async (req, res) => {
 
 /**
  * modifies the score
- * @apiParam {Object} playerId - the player id
+ * @apiParam {Object} userId - the user id
  * @apiParam {String} lobbyId - the lobby id
  * @apiParam {Number} by
  * @apiReturns {Object} response
  * @apiReturns {Boolean} response.ok
- * @apiReturns {Object} response.player
+ * @apiReturns {Object} response.user
  */
-router.put('/:lobbyId/players/:playerId', async (req, res, next) => {
+router.put('/:lobbyId/users/:userId', async (req, res, next) => {
   const { by } = req.body;
-  const { playerId, lobbyId } = req.params;
+  const { userId, lobbyId } = req.params;
 
   const lobby = await Lobbies.findOne({ _id: lobbyId });
-  const player = await lobby.incrementPlayerScore(playerId, by);
+  const user = await lobby.incrementUserScore(userId, by);
 
   ws.io.to(lobbyId).emit('lobby-info', { lobby });
 
-  res.json({ ok: true, player });
+  res.json({ ok: true, user });
 });
 
 /**
- * removes the player from the lobby
- * @apiParam {Object} playerId - the player id
+ * removes the user from the lobby
+ * @apiParam {Object} userId - the user id
  * @apiParam {String} lobbyId - the lobby id
  * @apiReturns {Boolean} response.ok
  */
-router.delete('/:lobbyId/players/:playerId', async (req, res, next) => {
-  const { playerId, lobbyId } = req.params;
+router.delete('/:lobbyId/users/:userId', async (req, res, next) => {
+  const { userId, lobbyId } = req.params;
 
   const lobby = await Lobbies.findOne({ _id: lobbyId });
-  lobby.removePlayer(playerId);
+  lobby.removeUser(userId);
 
   ws.io.to(lobbyId).emit('lobby-info', { lobby });
 
@@ -62,7 +62,7 @@ router.delete('/:lobbyId/players/:playerId', async (req, res, next) => {
 });
 
 
-router.use('/players', playersRoute);
+router.use('/users', usersRoute);
 
 /**
  * gets the lobby of the given id

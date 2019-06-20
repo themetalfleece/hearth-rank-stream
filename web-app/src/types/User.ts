@@ -1,4 +1,4 @@
-export interface PlayerI {
+export interface UserI {
     name: string;
     _id: string;
     score: {

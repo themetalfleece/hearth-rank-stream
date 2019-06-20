@@ -1,9 +1,9 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import ModActions from './components/Mod/ModActions';
-import Player from './components/Player/Player';
+import User from './components/User/User';
 import ModDashboard from './components/Mod/ModDashboard';
-import PlayersTableStream from './components/Player/PlayersTableStream';
+import UserTableStream from './components/User/UserTableStream';
 
 const App: React.FC = () => {
   return (
@@ -15,11 +15,11 @@ const App: React.FC = () => {
         <Route path='/mod/:id'>
           <ModDashboard />
         </Route>
-        <Route path={['/lobbies/:lobbyId/players/:playerId']}>
-          <Player />
+        <Route path={['/lobbies/:lobbyId/users/:userId']}>
+          <User />
         </Route>
         <Route path={['/lobbies/:lobbyId/']}>
-          <PlayersTableStream />
+          <UserTableStream />
         </Route>
         <Route>
           Invalid route

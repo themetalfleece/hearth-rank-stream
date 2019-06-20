@@ -1,17 +1,17 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import PlayersTable from './PlayersTable';
+import UserTable from './UserTable';
 
-const PlayerTableStream: React.FC<
+const UserTableStream: React.FC<
     RouteComponentProps<{
         lobbyId: string;
     }>
 > = (props) => {
     return (
-        <PlayersTable
+        <UserTable
             lobbyId={props.match.params.lobbyId}
         />
     );
 };
 
-export default withRouter(PlayerTableStream);
+export default withRouter(UserTableStream);

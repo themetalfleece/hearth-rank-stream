@@ -1,38 +1,38 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
-import PlayersTable from '../Player/PlayersTable';
+import UserTable from '../User/UserTable';
 import { LobbyI } from '../../types/Lobby';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Button } from 'react-bootstrap';
 
-const NewPlayerInput: React.FC<{
+const NewUserInput: React.FC<{
     lobbyId: string;
     onSuccess?: VoidFunction;
 }> = (props) => {
-    const [newPlayerName, setNewPlayerName] = React.useState('');
+    const [newUserName, setNewUserName] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
 
     return <input
-        value={newPlayerName}
+        value={newUserName}
         disabled={isLoading}
         autoFocus={true}
         onChange={(event) => {
-            setNewPlayerName(event.target.value);
+            setNewUserName(event.target.value);
         }}
         onKeyDown={async (event) => {
             if (event.key !== 'Enter') { return; }
 
             setIsLoading(true);
             try {
-                await apiAxios.post('/lobbies/players', {
+                await apiAxios.post('/lobbies/users', {
                     lobbyId: props.lobbyId,
-                    player: {
-                        name: newPlayerName,
+                    user: {
+                        name: newUserName,
                     }
                 });
 
-                setNewPlayerName('');
+                setNewUserName('');
                 setIsLoading(false);
                 if (props.onSuccess) {
                     props.onSuccess();
@@ -52,7 +52,7 @@ const ModDashboard: React.FC<
 
     const [lobby, setLobby] = React.useState<LobbyI>({
         _id: '',
-        players: [],
+        users: [],
     });
 
     // fetch the lobby data and set them
@@ -68,13 +68,13 @@ const ModDashboard: React.FC<
 
     let lobbyElement: JSX.Element = <div> Loading </div>;
     if (lobby) {
-        let playerTableElement: JSX.Element = <></>;
+        let userTableElement: JSX.Element = <></>;
         let copyToClipboardElement: JSX.Element = <></>;
         if (lobby._id) {
-            playerTableElement = <PlayersTable
+            userTableElement = <UserTable
                 lobbyId={lobby._id}
-                onKick={async (playerId) => {
-                    await apiAxios.delete(`/lobbies/${lobbyId}/players/${playerId}`);
+                onKick={async (userId) => {
+                    await apiAxios.delete(`/lobbies/${lobbyId}/users/${userId}`);
                     getLobby();
                 }}
             />;
@@ -85,10 +85,10 @@ const ModDashboard: React.FC<
         lobbyElement = <div>
             {copyToClipboardElement}
             <br />
-            {playerTableElement}
+            {userTableElement}
             <br />
-            Add Player
-                <NewPlayerInput
+            Add User
+                <NewUserInput
                 lobbyId={lobbyId}
                 onSuccess={getLobby}
             />

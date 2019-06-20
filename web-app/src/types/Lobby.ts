@@ -1,6 +1,6 @@
-import { PlayerI } from "./Player";
+import { UserI } from "./User";
 
 export interface LobbyI {
     _id: string;
-    players: PlayerI[];
+    users: UserI[];
 }

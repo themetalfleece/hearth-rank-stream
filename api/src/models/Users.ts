@@ -1,6 +1,6 @@
 import { Document, Model, Schema } from 'mongoose';
 
-export interface IPlayerAttributes {
+export interface IUserAttributes {
     name: string;
     score: {
         rank: number;
@@ -8,15 +8,15 @@ export interface IPlayerAttributes {
     };
 }
 
-export interface IPlayerDocument extends Document, IPlayerAttributes { }
+export interface IUserDocument extends Document, IUserAttributes { }
 
-export interface IPlayer extends IPlayerDocument {
+export interface IUser extends IUserDocument {
     incrementScore(by: number): VoidFunction;
 }
 
-export interface IPlayerModel extends Model<IPlayer> { }
+export interface IUserModel extends Model<IUser> { }
 
-export const PlayerSchema: Schema = new Schema({
+export const UserSchema: Schema = new Schema({
     name: {
         type: String,
         required: true,
@@ -40,8 +40,8 @@ export const PlayerSchema: Schema = new Schema({
     },
 });
 
-PlayerSchema.methods.incrementScore = function (by: number) {
-    const player = this as IPlayer;
+UserSchema.methods.incrementScore = function (by: number) {
+    const user = this as IUser;
 
     const maxStarsByRank = (rank: number) => {
         if (rank <= 10) { return 5; }
@@ -53,25 +53,25 @@ PlayerSchema.methods.incrementScore = function (by: number) {
         throw new Error(`By must be 1 or -1`);
     }
 
-    if (player.score.rank === 0 && by > 0) {
+    if (user.score.rank === 0 && by > 0) {
         return;
     }
 
-    const maxStarsCurrentRank = maxStarsByRank(player.score.rank);
+    const maxStarsCurrentRank = maxStarsByRank(user.score.rank);
 
-    if (player.score.stars === maxStarsCurrentRank && by === 1) {
-        player.score.rank--;
-        player.score.stars = 1;
-    } else if (player.score.stars === 0 && by === -1) {
-        player.score.rank++;
+    if (user.score.stars === maxStarsCurrentRank && by === 1) {
+        user.score.rank--;
+        user.score.stars = 1;
+    } else if (user.score.stars === 0 && by === -1) {
+        user.score.rank++;
         // stars in new rank
-        player.score.stars = maxStarsByRank(player.score.rank) - 1;
+        user.score.stars = maxStarsByRank(user.score.rank) - 1;
     } else {
-        player.score.stars += by;
+        user.score.stars += by;
     }
 
-    if (player.score.rank === 0) {
-        player.score.stars = 0;
+    if (user.score.rank === 0) {
+        user.score.stars = 0;
     }
 };
 
