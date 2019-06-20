@@ -18,6 +18,7 @@
 
 ## How to build and run the server
 * Navigate to the `api` directory with `cd api`
+* Create an `.env` file to match the corresponding `.env.example` with your values
 * For running in the development build, run `yarn dev`. It will automatically restart when you make changes
 * For running in the production build, run `yarn build`, followed by `yarn start`. You can run both of them via `yarn prod`
 

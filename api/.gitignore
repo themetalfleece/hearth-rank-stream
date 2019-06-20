@@ -4,5 +4,5 @@ node_modules
 dist
 # vscode settings
 .vscode
-# database files
-data
+# environmental files
+.env
