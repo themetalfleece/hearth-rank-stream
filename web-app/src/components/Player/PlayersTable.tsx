@@ -2,7 +2,7 @@ import React from 'react';
 import PlayerScore from './PlayerScore';
 import { PlayerI } from '../../types/Player';
 import { openSocket } from '../../utils/websockets';
-import { GameI } from '../../types/Game';
+import { LobbyI } from '../../types/Lobby';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import qs from 'query-string';
 
@@ -10,7 +10,7 @@ interface playerTablePropsI extends RouteComponentProps<{
     forStream: string;
     maxColumns: string;
 }> {
-    gameId: string;
+    lobbyId: string;
     onKick?: (playerId: string) => void;
 }
 
@@ -25,16 +25,16 @@ const PlayersTable: React.FC<playerTablePropsI> = (props) => {
 
     React.useEffect(() => {
         const socket = openSocket();
-        socket.emit('join-game', { gameId: props.gameId });
+        socket.emit('join-lobby', { lobbyId: props.lobbyId });
 
-        socket.on('game-info', (data: { game: GameI }) => {
-            setPlayers(data.game.players);
+        socket.on('lobby-info', (data: { lobby: LobbyI }) => {
+            setPlayers(data.lobby.players);
         });
 
         return () => {
             socket.close();
         }
-    }, [props.gameId]);
+    }, [props.lobbyId]);
 
     let tableStyle: React.CSSProperties = {};
     if (forStream === 'true') {
@@ -72,7 +72,7 @@ const PlayersTable: React.FC<playerTablePropsI> = (props) => {
                         .map((player) => <tr key={player._id}>
                             <td><PlayerScore score={player.score} /></td>
                             <td>
-                                <a href={`/games/${props.gameId}/players/${player._id}`} target='_blank' rel="noopener noreferrer">
+                                <a href={`/lobbies/${props.lobbyId}/players/${player._id}`} target='_blank' rel="noopener noreferrer">
                                     <div style={{ width: '100%', height: '100%' }}>
                                         {player.name}
                                     </div>

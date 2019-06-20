@@ -8,12 +8,12 @@ import { Button, ButtonGroup, Container, Row, Col } from 'react-bootstrap';
 const ScoreModifyButton: React.FC<{
     disabled: boolean;
     playerId: string;
-    gameId: string;
+    lobbyId: string;
     direction: 'positive' | 'negative';
     onSuccess: (player: PlayerI) => void;
 }> = (props) => {
     const onClick: VoidFunction = async () => {
-        const res = await apiAxios.put(`/games/${props.gameId}/players/${props.playerId}`, {
+        const res = await apiAxios.put(`/lobbies/${props.lobbyId}/players/${props.playerId}`, {
             by: props.direction === 'positive' ? 1 : -1,
         });
         props.onSuccess(res.data.player);
@@ -26,11 +26,11 @@ const ScoreModifyButton: React.FC<{
 
 const Player: React.FC<
     RouteComponentProps<{
-        gameId: string;
+        lobbyId: string;
         playerId: string;
     }>
 > = (props) => {
-    const gameId = props.match.params.gameId;
+    const lobbyId = props.match.params.lobbyId;
     const playerId = props.match.params.playerId;
 
     const [player, setPlayer] = React.useState<PlayerI>({
@@ -48,7 +48,7 @@ const Player: React.FC<
         const fetchPlayer = async () => {
             setIsLoading(true);
             try {
-                const { data } = await apiAxios.get(`/games/${gameId}/players/${playerId}`);
+                const { data } = await apiAxios.get(`/lobbies/${lobbyId}/players/${playerId}`);
 
                 setPlayer(data.player);
                 setIsLoading(false);
@@ -58,10 +58,10 @@ const Player: React.FC<
         }
 
         fetchPlayer();
-    }, [gameId, playerId]);
+    }, [lobbyId, playerId]);
 
-    const leaveGame = async () => {
-        await apiAxios.delete(`/games/${gameId}/players/${playerId}`);
+    const leaveLobby = async () => {
+        await apiAxios.delete(`/lobbies/${lobbyId}/players/${playerId}`);
         setHasLeft(true);
     }
 
@@ -89,14 +89,14 @@ const Player: React.FC<
                     <ButtonGroup>
                         <ScoreModifyButton
                             disabled={isLoading}
-                            gameId={gameId}
+                            lobbyId={lobbyId}
                             playerId={playerId}
                             direction='negative'
                             onSuccess={(player) => setPlayer(player)}
                         />
                         <ScoreModifyButton
                             disabled={isLoading}
-                            gameId={gameId}
+                            lobbyId={lobbyId}
                             playerId={playerId}
                             direction='positive'
                             onSuccess={(player) => setPlayer(player)}
@@ -105,7 +105,7 @@ const Player: React.FC<
                 </Col>
             </Row>
             <Row style={rowStyle} className={rowClassName}>
-                <Button variant='danger' size="sm" disabled={isLoading} onClick={leaveGame}>Leave Game</Button>
+                <Button variant='danger' size="sm" disabled={isLoading} onClick={leaveLobby}>Leave Lobby</Button>
             </Row>
         </Container>
     }

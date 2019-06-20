@@ -2,12 +2,12 @@ import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
 import PlayersTable from '../Player/PlayersTable';
-import { GameI } from '../../types/Game';
+import { LobbyI } from '../../types/Lobby';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Button } from 'react-bootstrap';
 
 const NewPlayerInput: React.FC<{
-    gameId: string;
+    lobbyId: string;
     onSuccess?: VoidFunction;
 }> = (props) => {
     const [newPlayerName, setNewPlayerName] = React.useState('');
@@ -25,8 +25,8 @@ const NewPlayerInput: React.FC<{
 
             setIsLoading(true);
             try {
-                await apiAxios.post('/games/players', {
-                    gameId: props.gameId,
+                await apiAxios.post('/lobbies/players', {
+                    lobbyId: props.lobbyId,
                     player: {
                         name: newPlayerName,
                     }
@@ -48,56 +48,56 @@ const ModDashboard: React.FC<
     RouteComponentProps<{ id: string }>
 > = (props) => {
 
-    const gameId = props.match.params.id;
+    const lobbyId = props.match.params.id;
 
-    const [game, setGame] = React.useState<GameI>({
+    const [lobby, setLobby] = React.useState<LobbyI>({
         _id: '',
         players: [],
     });
 
-    // fetch the game data and set them
-    const getGame = React.useCallback(async () => {
-        const { data } = await apiAxios.get(`/games/${gameId}`);
-        setGame(data.game);
-    }, [gameId]);
+    // fetch the lobby data and set them
+    const getLobby = React.useCallback(async () => {
+        const { data } = await apiAxios.get(`/lobbies/${lobbyId}`);
+        setLobby(data.lobby);
+    }, [lobbyId]);
 
-    // on loading, get game data
+    // on loading, get lobby data
     React.useEffect(() => {
-        getGame();
-    }, [getGame]);
+        getLobby();
+    }, [getLobby]);
 
-    let gameElement: JSX.Element = <div> Loading </div>;
-    if (game) {
+    let lobbyElement: JSX.Element = <div> Loading </div>;
+    if (lobby) {
         let playerTableElement: JSX.Element = <></>;
         let copyToClipboardElement: JSX.Element = <></>;
-        if (game._id) {
+        if (lobby._id) {
             playerTableElement = <PlayersTable
-                gameId={game._id}
+                lobbyId={lobby._id}
                 onKick={async (playerId) => {
-                    await apiAxios.delete(`/games/${gameId}/players/${playerId}`);
-                    getGame();
+                    await apiAxios.delete(`/lobbies/${lobbyId}/players/${playerId}`);
+                    getLobby();
                 }}
             />;
-            copyToClipboardElement = <CopyToClipboard text={`${window.location.host}/games/${gameId}?forStream=true&maxColumns=10`}>
+            copyToClipboardElement = <CopyToClipboard text={`${window.location.host}/lobbies/${lobbyId}?forStream=true&maxColumns=10`}>
                 <Button variant="warning">Copy OBS link</Button>
             </CopyToClipboard>;
         }
-        gameElement = <div>
+        lobbyElement = <div>
             {copyToClipboardElement}
             <br />
             {playerTableElement}
             <br />
             Add Player
                 <NewPlayerInput
-                gameId={gameId}
-                onSuccess={getGame}
+                lobbyId={lobbyId}
+                onSuccess={getLobby}
             />
         </div>
     }
 
     return (
         <>
-            {gameElement}
+            {lobbyElement}
         </>
     )
 }

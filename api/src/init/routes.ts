@@ -6,10 +6,10 @@ import * as http from 'http';
 import * as logger from 'morgan';
 import * as path from 'path';
 
-import { router as gamesRouter } from '../routes/games';
+import { router as lobbiesRouter } from '../routes/lobbies';
 
 export const useRoutes = (app: Express) => {
-    app.use('/api/games', gamesRouter);
+    app.use('/api/lobbies', lobbiesRouter);
 };
 
 export const init = () => {

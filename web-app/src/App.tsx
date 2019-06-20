@@ -15,10 +15,10 @@ const App: React.FC = () => {
         <Route path='/mod/:id'>
           <ModDashboard />
         </Route>
-        <Route path={['/games/:gameId/players/:playerId']}>
+        <Route path={['/lobbies/:lobbyId/players/:playerId']}>
           <Player />
         </Route>
-        <Route path={['/games/:gameId/']}>
+        <Route path={['/lobbies/:lobbyId/']}>
           <PlayersTableStream />
         </Route>
         <Route>

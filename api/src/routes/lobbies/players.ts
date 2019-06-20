@@ -1,13 +1,13 @@
 import * as express from 'express';
 import { ws } from '../../init/websockets';
-import { Games } from '../../models/Games';
+import { Lobbies } from '../../models/Lobbies';
 import { IPlayerAttributes, } from '../../models/Players';
 
 export const router = express.Router({ mergeParams: true });
 
 /**
  * adds a player
- * @apiParam {String} gameId - the game id
+ * @apiParam {String} lobbyId - the lobby id
  * @apiParam {Object} player - the player object
  * @apiParam {String} player.name - the player name
  * @apiParam {Object} player.score - the score object
@@ -15,7 +15,7 @@ export const router = express.Router({ mergeParams: true });
  * @apiParam {Number} player.score.stars - the player's stars
  */
 router.post('/', async (req, res, next) => {
-    const { gameId } = req.body;
+    const { lobbyId } = req.body;
 
     const player: IPlayerAttributes = {
         name: req.body.player && req.body.player.name,
@@ -25,10 +25,10 @@ router.post('/', async (req, res, next) => {
         },
     };
 
-    const game = await Games.findOne({ _id: gameId });
-    game.addPlayer(player);
+    const lobby = await Lobbies.findOne({ _id: lobbyId });
+    lobby.addPlayer(player);
 
-    ws.io.to(gameId).emit('game-info', { game });
+    ws.io.to(lobbyId).emit('lobby-info', { lobby });
 
     res.json({ ok: true, player });
 });

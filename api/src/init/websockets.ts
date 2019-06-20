@@ -1,6 +1,6 @@
 import { Server } from 'http';
 import * as socket from 'socket.io';
-import { Games } from '../models/Games';
+import { Lobbies } from '../models/Lobbies';
 
 export const ws: {
     io: socket.Server;
@@ -18,14 +18,14 @@ export const init = (server?: Server) => {
     ws.io = socket(server);
     try {
         ws.io.on('connection', (socket) => {
-            socket.on('join-game', async (data) => {
-                if (data && data.gameId) {
-                    // the the room by gameId
-                    socket.join(data && data.gameId);
+            socket.on('join-lobby', async (data) => {
+                if (data && data.lobbyId) {
+                    // the the room by lobbyId
+                    socket.join(data && data.lobbyId);
 
-                    // emit the current game info
-                    socket.emit('game-info', {
-                        game: await Games.findOne({ _id: data.gameId }),
+                    // emit the current lobby info
+                    socket.emit('lobby-info', {
+                        lobby: await Lobbies.findOne({ _id: data.lobbyId }),
                     });
                 }
             });

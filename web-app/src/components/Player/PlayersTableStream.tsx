@@ -4,12 +4,12 @@ import PlayersTable from './PlayersTable';
 
 const PlayerTableStream: React.FC<
     RouteComponentProps<{
-        gameId: string;
+        lobbyId: string;
     }>
 > = (props) => {
     return (
         <PlayersTable
-            gameId={props.match.params.gameId}
+            lobbyId={props.match.params.lobbyId}
         />
     );
 };

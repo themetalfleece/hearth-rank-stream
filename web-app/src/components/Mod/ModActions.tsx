@@ -3,20 +3,20 @@ import { Redirect } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
 
 const ModActions: React.FC = () => {
-    const [gameId, setGameId] = React.useState('');
+    const [lobbyId, setLobbyId] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
 
-    if (gameId) {
-        return <Redirect to={`/mod/${gameId}`} />
+    if (lobbyId) {
+        return <Redirect to={`/mod/${lobbyId}`} />
     }
 
-    const onCreateGameClicked = async () => {
+    const onCreateLobbyClicked = async () => {
         setIsLoading(true);
         try {
-            const res = await apiAxios.post('/games/');
+            const res = await apiAxios.post('/lobbies/');
 
             if (res.data && res.data.id) {
-                setGameId(res.data.id);
+                setLobbyId(res.data.id);
                 return;
             }
 
@@ -30,9 +30,9 @@ const ModActions: React.FC = () => {
         <div>
             <button
                 disabled={isLoading}
-                onClick={onCreateGameClicked}
+                onClick={onCreateLobbyClicked}
             >
-                Create Game
+                Create Lobby
             </button>
         </div>
     )
