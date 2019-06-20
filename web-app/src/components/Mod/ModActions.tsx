@@ -15,8 +15,8 @@ const ModActions: React.FC = () => {
         try {
             const res = await apiAxios.post('/games/');
 
-            if (res.data && res.data._id) {
-                setGameId(res.data._id);
+            if (res.data && res.data.id) {
+                setGameId(res.data.id);
                 return;
             }
 

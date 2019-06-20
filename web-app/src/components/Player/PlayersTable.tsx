@@ -1,7 +1,7 @@
 import React from 'react';
 import PlayerScore from './PlayerScore';
 import { PlayerI } from '../../types/Player';
-import openSocket from 'socket.io-client';
+import { openSocket } from '../../utils/websockets';
 import { GameI } from '../../types/Game';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import qs from 'query-string';
@@ -24,7 +24,7 @@ const PlayersTable: React.FC<playerTablePropsI> = (props) => {
     const [players, setPlayers] = React.useState<PlayerI[]>([]);
 
     React.useEffect(() => {
-        const socket = openSocket('http://localhost:3000');
+        const socket = openSocket();
         socket.emit('join-game', { gameId: props.gameId });
 
         socket.on('game-info', (data: { game: GameI }) => {
