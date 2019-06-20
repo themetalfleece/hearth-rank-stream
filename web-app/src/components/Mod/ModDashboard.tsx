@@ -4,7 +4,8 @@ import { apiAxios } from '../../utils/axios';
 import UserTable from '../User/UserTable';
 import { LobbyI } from '../../types/Lobby';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { Button } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
+import { UserI } from '../../types/User';
 
 const NewUserInput: React.FC<{
     lobbyId: string;
@@ -55,6 +56,7 @@ const ModDashboard: React.FC<
         name: '',
         users: [],
     });
+    const [userToKick, setUserToKick] = React.useState<UserI | undefined>();
 
     // fetch the lobby data and set them
     const getLobby = React.useCallback(async () => {
@@ -73,15 +75,14 @@ const ModDashboard: React.FC<
         let copyToClipboardElement = <></>;
         let addUserElement = <></>;
         let lobbyNameElement = <></>;
+        let toKickConfirmElement = <></>;
 
         if (lobby._id) {
-            lobbyNameElement = <span> Welcome to {lobby.name} </span>
+            lobbyNameElement = <span> Welcome to {lobby.name} </span>;
+
             userTableElement = <UserTable
                 lobbyId={lobby._id}
-                onKick={async (userId) => {
-                    await apiAxios.delete(`/lobbies/${lobbyId}/users/${userId}`);
-                    getLobby();
-                }}
+                onKick={(user) => { setUserToKick(user) }}
             />;
 
             copyToClipboardElement = <CopyToClipboard text={`${window.location.host}/lobbies/${lobbyId}?forStream=true&maxColumns=10`}>
@@ -94,9 +95,38 @@ const ModDashboard: React.FC<
                     lobbyId={lobbyId}
                     onSuccess={getLobby}
                 />
-            </>
+            </>;
+
+            if (userToKick) {
+                toKickConfirmElement =
+                    <Modal.Dialog>
+                        <Modal.Body>
+                            <p>Really kick {userToKick.name}?</p>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button
+                                variant="danger"
+                                onClick={async () => {
+                                    await apiAxios.delete(`/lobbies/${lobbyId}/users/${userToKick._id}`);
+                                    setUserToKick(undefined);
+                                    getLobby();
+                                }}
+                            >
+                                Kick
+                            </Button>
+                            <Button
+                                variant="primary"
+                                onClick={() => { setUserToKick(undefined); }}
+                            >
+                                Don't kick
+                            </Button>
+                        </Modal.Footer>
+                    </Modal.Dialog>;
+            }
         }
         lobbyElement = <div>
+            {toKickConfirmElement}
+            <br />
             {lobbyNameElement}
             <br />
             {copyToClipboardElement}

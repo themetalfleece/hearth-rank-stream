@@ -11,7 +11,7 @@ interface userTablePropsI extends RouteComponentProps<{
     maxColumns: string;
 }> {
     lobbyId: string;
-    onKick?: (userId: string) => void;
+    onKick?: (userId: UserI) => void;
 }
 
 const UserTable: React.FC<userTablePropsI> = (props) => {
@@ -82,7 +82,7 @@ const UserTable: React.FC<userTablePropsI> = (props) => {
                                 props.onKick ?
                                     <td
                                         style={{ cursor: 'pointer' }}
-                                        onClick={() => props.onKick && props.onKick(user._id)}
+                                        onClick={() => props.onKick && props.onKick(user)}
                                     ><span role="img" aria-label="kick">🚫</span></td>
                                     : null
                             }

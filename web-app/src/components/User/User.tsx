@@ -3,7 +3,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
 import UserScore from './UserScore';
 import { UserI } from '../../types/User';
-import { Button, ButtonGroup, Container, Row, Col } from 'react-bootstrap';
+import { Button, ButtonGroup, Container, Row, Modal, Col } from 'react-bootstrap';
 import { LobbyI } from '../../types/Lobby';
 
 const ScoreModifyButton: React.FC<{
@@ -45,6 +45,8 @@ const User: React.FC<
     const [isLoading, setIsLoading] = React.useState(false);
     const [hasLeft, setHasLeft] = React.useState(false);
     const [lobby, setLobby] = React.useState<Partial<LobbyI>>({ name: '' });
+    // in order to show the confirmation modal
+    const [isLeavingLobby, setIsLeavingLobby] = React.useState(false);
 
     React.useEffect(() => {
         const fetchUser = async () => {
@@ -69,14 +71,40 @@ const User: React.FC<
     }
 
     if (hasLeft) {
-        return <>Thanks for playing!</>;
+        return <>Thanks for participating!</>;
     }
 
     let userElement: JSX.Element = <div > Loading </div>;
+    let leavingLobbyElement = <></>;
+    if (isLeavingLobby) {
+        leavingLobbyElement = <Modal.Dialog>
+            <Modal.Body>
+                <p>Really leave?</p>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button
+                    variant="danger"
+                    onClick={leaveLobby}
+                >
+                    Leave
+            </Button>
+                <Button
+                    variant="primary"
+                    onClick={() => { setIsLeavingLobby(false); }}
+                >
+                    Don't leave
+            </Button>
+            </Modal.Footer>
+        </Modal.Dialog>;
+    }
+
     const rowStyle: React.CSSProperties = { padding: '3px' };
     const rowClassName = "justify-content-center";
     if (user._id) {
         userElement = <Container>
+            <Row style={rowStyle} className={rowClassName}>
+                {leavingLobbyElement}
+            </Row>
             <Row style={rowStyle} className={rowClassName}>
                 <Col xs='auto'>
                     Welcome to {lobby.name}, {user.name}!
@@ -108,7 +136,14 @@ const User: React.FC<
                 </Col>
             </Row>
             <Row style={rowStyle} className={rowClassName}>
-                <Button variant='danger' size="sm" disabled={isLoading} onClick={leaveLobby}>Leave Lobby</Button>
+                <Button
+                    variant='danger'
+                    size="sm"
+                    disabled={isLoading}
+                    onClick={() => setIsLeavingLobby(true)}
+                >
+                    Leave Lobby
+                </Button>
             </Row>
         </Container>
     }
