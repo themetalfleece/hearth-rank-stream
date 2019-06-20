@@ -27,6 +27,11 @@ const UserTable: React.FC<userTablePropsI> = (props) => {
         const socket = openSocket();
         socket.emit('join-lobby', { lobbyId: props.lobbyId });
 
+        // on socket reconnect, fetch the lobby again
+        socket.on('reconnect', () => {
+            socket.emit('join-lobby', { lobbyId: props.lobbyId });
+        })
+
         socket.on('lobby-info', (data: { lobby: LobbyI }) => {
             setUsers(data.lobby.users);
         });
