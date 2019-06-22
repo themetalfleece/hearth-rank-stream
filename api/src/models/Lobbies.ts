@@ -52,6 +52,11 @@ LobbySchema.methods.removeUser = async function (userId: string) {
 
     lobby.users = lobby.users.filter((user) => user !== userToRemove);
 
+    // remove their key
+    await UserKeys.deleteOne({
+        userId,
+        lobbyId: lobby.id,
+    });
     await this.save();
 };
 
