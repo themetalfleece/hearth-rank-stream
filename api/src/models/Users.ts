@@ -23,6 +23,7 @@ export const UserSchema: Schema = new Schema({
         required: true,
         minlength: 3,
     },
+    // Hearthstone ranking
     score: {
         type: new Schema({
             rank: {
@@ -40,6 +41,7 @@ export const UserSchema: Schema = new Schema({
     },
 });
 
+// as per Hearthstone ranking
 UserSchema.methods.incrementScore = function (by: number) {
     const user = this as IUser;
 

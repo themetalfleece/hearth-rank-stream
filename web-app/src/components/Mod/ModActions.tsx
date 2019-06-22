@@ -4,6 +4,7 @@ import { apiAxios } from '../../utils/axios';
 import { Button } from 'react-bootstrap';
 
 const ModActions: React.FC = () => {
+    // the lobby id which will be set while creating a game
     const [lobbyId, setLobbyId] = React.useState('');
     const [isLoading, setIsLoading] = React.useState(false);
     const [lobbyNameInputValue, setLobbyNameInputValue] = React.useState('');
@@ -12,6 +13,7 @@ const ModActions: React.FC = () => {
         return <Redirect to={`/mod/${lobbyId}`} />
     }
 
+    // make the create lobby request and set the lobbyId
     const createLobby = async () => {
         setIsLoading(true);
         try {

@@ -7,6 +7,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { Button, Modal } from 'react-bootstrap';
 import { UserI } from '../../types/User';
 
+// the component for adding a new user to the lobby
 const NewUserInput: React.FC<{
     lobbyId: string;
     onSuccess?: VoidFunction;
@@ -51,11 +52,9 @@ const ModDashboard: React.FC<
 
     const lobbyId = props.match.params.id;
 
-    const [lobby, setLobby] = React.useState<LobbyI>({
-        _id: '',
-        name: '',
-        users: [],
-    });
+    // lobby object which will be fetched from the server
+    const [lobby, setLobby] = React.useState<LobbyI | undefined>(undefined);
+    // in case a user is about to be kicked and confirmation is pending
     const [userToKick, setUserToKick] = React.useState<UserI | undefined>();
 
     // fetch the lobby data and set them
@@ -69,27 +68,28 @@ const ModDashboard: React.FC<
         getLobby();
     }, [getLobby]);
 
+    // the element which corresponds to the lobby
     let lobbyElement: JSX.Element = <div> Loading </div>;
-    if (lobby) {
-        let userTableElement = <></>;
-        let copyToClipboardElement = <></>;
-        let addUserElement = <></>;
-        let lobbyNameElement = <></>;
-        let toKickConfirmElement = <></>;
+    if (lobby && lobby._id) {
+        // lobby name
+        const lobbyNameElement = <span> Welcome to {lobby.name} </span>;
 
-        if (lobby._id) {
-            lobbyNameElement = <span> Welcome to {lobby.name} </span>;
-
-            userTableElement = <UserTable
+        // the table of users
+        const userTableElement =
+            <UserTable
                 lobbyId={lobby._id}
                 onKick={(user) => { setUserToKick(user) }}
             />;
 
-            copyToClipboardElement = <CopyToClipboard text={`${window.location.host}/lobbies/${lobbyId}?forStream=true&maxColumns=10`}>
+        // the element for copying links to the clipboard
+        const copyToClipboardElement =
+            <CopyToClipboard text={`${window.location.host}/lobbies/${lobbyId}?forStream=true&maxColumns=10`}>
                 <Button variant="warning">Copy OBS link</Button>
             </CopyToClipboard>;
 
-            addUserElement = <>
+        // the input for adding a new user
+        const addUserElement =
+            <>
                 Add User
                 <NewUserInput
                     lobbyId={lobbyId}
@@ -97,33 +97,35 @@ const ModDashboard: React.FC<
                 />
             </>;
 
-            if (userToKick) {
-                toKickConfirmElement =
-                    <Modal.Dialog>
-                        <Modal.Body>
-                            <p>Really kick {userToKick.name}?</p>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button
-                                variant="danger"
-                                onClick={async () => {
-                                    await apiAxios.delete(`/lobbies/${lobbyId}/users/${userToKick._id}`);
-                                    setUserToKick(undefined);
-                                    getLobby();
-                                }}
-                            >
-                                Kick
+        // the confirmation element which appears if a player is about to be kicked
+        let toKickConfirmElement = <></>;
+        if (userToKick) {
+            toKickConfirmElement =
+                <Modal.Dialog>
+                    <Modal.Body>
+                        <p>Really kick {userToKick.name}?</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            variant="danger"
+                            onClick={async () => {
+                                await apiAxios.delete(`/lobbies/${lobbyId}/users/${userToKick._id}`);
+                                setUserToKick(undefined);
+                                getLobby();
+                            }}
+                        >
+                            Kick
                             </Button>
-                            <Button
-                                variant="primary"
-                                onClick={() => { setUserToKick(undefined); }}
-                            >
-                                Don't kick
+                        <Button
+                            variant="primary"
+                            onClick={() => { setUserToKick(undefined); }}
+                        >
+                            Don't kick
                             </Button>
-                        </Modal.Footer>
-                    </Modal.Dialog>;
-            }
+                    </Modal.Footer>
+                </Modal.Dialog>;
         }
+
         lobbyElement = <div>
             {toKickConfirmElement}
             <br />

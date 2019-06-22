@@ -6,6 +6,7 @@ import { UserI } from '../../types/User';
 import { Button, ButtonGroup, Container, Row, Modal, Col } from 'react-bootstrap';
 import { LobbyI } from '../../types/Lobby';
 
+// a button which is used for increasing or decreasing the player score
 const ScoreModifyButton: React.FC<{
     disabled: boolean;
     userId: string;
@@ -34,20 +35,17 @@ const User: React.FC<
     const lobbyId = props.match.params.lobbyId;
     const userId = props.match.params.userId;
 
-    const [user, setUser] = React.useState<UserI>({
-        name: '',
-        _id: '',
-        score: {
-            rank: 0,
-            stars: 0,
-        },
-    });
+    // the user which will be fetched from the server
+    const [user, setUser] = React.useState<UserI | undefined>(undefined);
     const [isLoading, setIsLoading] = React.useState(false);
+    // if the user has left the lobby, where a message will be displayed
     const [hasLeft, setHasLeft] = React.useState(false);
-    const [lobby, setLobby] = React.useState<Partial<LobbyI>>({ name: '' });
-    // in order to show the confirmation modal
+    // the lobby which will be fetched from the server
+    const [lobby, setLobby] = React.useState<{ name: LobbyI['name'] } | undefined>();
+    // if the user is about to leave, in order to show the confirmation modal
     const [isLeavingLobby, setIsLeavingLobby] = React.useState(false);
 
+    // when the component is initialized, fetch the user and the lobby from the server
     React.useEffect(() => {
         const fetchUser = async () => {
             setIsLoading(true);
@@ -74,80 +72,82 @@ const User: React.FC<
         return <>Thanks for participating!</>;
     }
 
-    let userElement: JSX.Element = <div > Loading </div>;
     let leavingLobbyElement = <></>;
     if (isLeavingLobby) {
-        leavingLobbyElement = <Modal.Dialog>
-            <Modal.Body>
-                <p>Really leave?</p>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button
-                    variant="danger"
-                    onClick={leaveLobby}
-                >
-                    Leave
-            </Button>
-                <Button
-                    variant="primary"
-                    onClick={() => { setIsLeavingLobby(false); }}
-                >
-                    Don't leave
-            </Button>
-            </Modal.Footer>
-        </Modal.Dialog>;
+        leavingLobbyElement =
+            <Modal.Dialog>
+                <Modal.Body>
+                    <p>Really leave?</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        variant="danger"
+                        onClick={leaveLobby}
+                    >
+                        Leave
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={() => { setIsLeavingLobby(false); }}
+                    >
+                        Don't leave
+                    </Button>
+                </Modal.Footer>
+            </Modal.Dialog>;
     }
+
+    let userElement: JSX.Element = <div > Loading </div>;
 
     const rowStyle: React.CSSProperties = { padding: '3px' };
     const rowClassName = "justify-content-center";
-    if (user._id) {
-        userElement = <Container>
-            <Row style={rowStyle} className={rowClassName}>
-                {leavingLobbyElement}
-            </Row>
-            <Row style={rowStyle} className={rowClassName}>
-                <Col xs='auto'>
-                    Welcome to {lobby.name}, {user.name}!
+    if (user && user._id && lobby) {
+        userElement =
+            <Container>
+                <Row style={rowStyle} className={rowClassName}>
+                    {leavingLobbyElement}
+                </Row>
+                <Row style={rowStyle} className={rowClassName}>
+                    <Col xs='auto'>
+                        Welcome to {lobby.name}, {user.name}!
                 </Col>
-            </Row>
-            <Row style={rowStyle} className={rowClassName}>
-                <Col xs='auto'>
-                    <UserScore score={user.score} />
-                </Col>
-            </Row>
-            <Row style={rowStyle} className={rowClassName}>
-                <Col xs='auto'>
-                    <ButtonGroup>
-                        <ScoreModifyButton
-                            disabled={isLoading}
-                            lobbyId={lobbyId}
-                            userId={userId}
-                            direction='negative'
-                            onSuccess={(user) => setUser(user)}
-                        />
-                        <ScoreModifyButton
-                            disabled={isLoading}
-                            lobbyId={lobbyId}
-                            userId={userId}
-                            direction='positive'
-                            onSuccess={(user) => setUser(user)}
-                        />
-                    </ButtonGroup>
-                </Col>
-            </Row>
-            <Row style={rowStyle} className={rowClassName}>
-                <Button
-                    variant='danger'
-                    size="sm"
-                    disabled={isLoading}
-                    onClick={() => setIsLeavingLobby(true)}
-                >
-                    Leave Lobby
+                </Row>
+                <Row style={rowStyle} className={rowClassName}>
+                    <Col xs='auto'>
+                        <UserScore score={user.score} />
+                    </Col>
+                </Row>
+                <Row style={rowStyle} className={rowClassName}>
+                    <Col xs='auto'>
+                        <ButtonGroup>
+                            <ScoreModifyButton
+                                disabled={isLoading}
+                                lobbyId={lobbyId}
+                                userId={userId}
+                                direction='negative'
+                                onSuccess={(user) => setUser(user)}
+                            />
+                            <ScoreModifyButton
+                                disabled={isLoading}
+                                lobbyId={lobbyId}
+                                userId={userId}
+                                direction='positive'
+                                onSuccess={(user) => setUser(user)}
+                            />
+                        </ButtonGroup>
+                    </Col>
+                </Row>
+                <Row style={rowStyle} className={rowClassName}>
+                    <Button
+                        variant='danger'
+                        size="sm"
+                        disabled={isLoading}
+                        onClick={() => setIsLeavingLobby(true)}
+                    >
+                        Leave Lobby
                 </Button>
-            </Row>
-        </Container>
-    }
-    if (!user && !isLoading) {
+                </Row>
+            </Container>
+    } else if (!user && !isLoading) {
         userElement = <span> This user cannot be found </span>
     }
 

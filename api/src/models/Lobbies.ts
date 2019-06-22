@@ -33,8 +33,10 @@ const LobbySchema: Schema = new Schema({
 LobbySchema.methods.addUser = async function (userAttributes: IUserAttributes) {
     const lobby = this as ILobby;
     const user = new Users(userAttributes);
+    // push it to the users of the lobby
     lobby.users.push(user);
     await lobby.save();
+    // create the key for this user
     await UserKeys.create({
         lobbyId: lobby._id,
         userId: user._id,
@@ -50,6 +52,7 @@ LobbySchema.methods.removeUser = async function (userId: string) {
         throw new Error(`User not found`);
     }
 
+    // remove the user from the lobby
     lobby.users = lobby.users.filter((user) => user !== userToRemove);
 
     // remove their key
@@ -57,6 +60,7 @@ LobbySchema.methods.removeUser = async function (userId: string) {
         userId,
         lobbyId: lobby.id,
     });
+
     await this.save();
 };
 

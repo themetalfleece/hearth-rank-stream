@@ -10,9 +10,7 @@ export interface IUserKeyAttributes {
 
 export interface IUserKeyDocument extends Document, IUserKeyAttributes { }
 
-export interface IUserKey extends IUserKeyDocument {
-
-}
+export interface IUserKey extends IUserKeyDocument { }
 
 export interface IUserKeyModel extends Model<IUserKey> { }
 

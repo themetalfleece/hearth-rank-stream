@@ -1,5 +1,6 @@
 import React from 'react';
 
+/* the display of the user score as text */
 const UserScore: React.FC<{
     score: {
         stars: number;

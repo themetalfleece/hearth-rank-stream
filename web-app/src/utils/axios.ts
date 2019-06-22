@@ -7,6 +7,7 @@ export const apiAxios = axios.create({
         return status >= 200 && status < 300;
     },
     headers: {
+        // include the stored json web token
         Authorization: 'bearer ' + localStorage.getItem('jwt'),
     }
 });

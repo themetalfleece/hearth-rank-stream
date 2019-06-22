@@ -7,9 +7,12 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import qs from 'query-string';
 
 interface userTablePropsI extends RouteComponentProps<{
+    // from the url
+    /** to change the style for embedding it into streams */
     forStream: string;
     maxColumns: string;
 }> {
+    // as component props
     lobbyId: string;
     onKick?: (userId: UserI) => void;
 }
@@ -21,10 +24,12 @@ const UserTable: React.FC<userTablePropsI> = (props) => {
     const _maxColumns = qs.parse(props.location.search).maxColumns;
     const maxColumns = _maxColumns ? +_maxColumns : undefined;
 
+    // the users which will be fetched via socket data
     const [users, setUsers] = React.useState<UserI[]>([]);
 
     React.useEffect(() => {
         const socket = openSocket();
+        // on connection, emit the join-lobby event
         socket.emit('join-lobby', { lobbyId: props.lobbyId });
 
         // on socket reconnect, fetch the lobby again
@@ -32,10 +37,12 @@ const UserTable: React.FC<userTablePropsI> = (props) => {
             socket.emit('join-lobby', { lobbyId: props.lobbyId });
         })
 
+        // lobby-info in the event which arrived each time anything regarding the users has changed
         socket.on('lobby-info', (data: { lobby: LobbyI }) => {
             setUsers(data.lobby.users);
         });
 
+        // close the socket when closing
         return () => {
             socket.close();
         }
@@ -65,6 +72,7 @@ const UserTable: React.FC<userTablePropsI> = (props) => {
                 {
                     users
                         .sort((p1, p2) => {
+                            // sort by lower rank first, then greater stars
                             if (p1.score.rank !== p2.score.rank) {
                                 return p1.score.rank > p2.score.rank ? 1 : -1;
                             }
@@ -77,6 +85,7 @@ const UserTable: React.FC<userTablePropsI> = (props) => {
                         .map((user) => <tr key={user._id}>
                             <td><UserScore score={user.score} /></td>
                             <td>
+                                {/* on player click, go to its page */}
                                 <a href={`/lobbies/${props.lobbyId}/users/${user._id}`} target='_blank' rel="noopener noreferrer">
                                     <div style={{ width: '100%', height: '100%' }}>
                                         {user.name}
