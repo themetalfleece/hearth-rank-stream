@@ -20,22 +20,21 @@ export const UserSchema: Schema = new Schema({
     name: {
         type: String,
         required: true,
+        minlength: 3,
     },
     score: {
-        rank: {
-            type: Number,
-            required: true,
-        },
-        // TODO
-        //         if (stars < 0 || stars > 5) {
-        //             throw new Error(`Invalid stars amount`);
-        //         }
-        //         if (rank < 0 || rank > 50) {
-        //             throw new Error(`Invalid rank amount`);
-        //         }
-        stars: {
-            type: Number,
-            required: true,
+        type: new Schema({
+            rank: {
+                type: Number,
+                required: true,
+            },
+            stars: {
+                type: Number,
+                required: true,
+            },
+        }),
+        validate: (score: IUserAttributes['score']) => {
+            return (score.stars >= 0 && score.stars <= 5 && score.rank >= 0 && score.rank <= 50);
         },
     },
 });

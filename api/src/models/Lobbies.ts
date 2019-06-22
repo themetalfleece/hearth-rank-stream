@@ -21,6 +21,7 @@ const LobbySchema: Schema = new Schema({
     name: {
         type: String,
         required: true,
+        minlength: 3,
     },
     users: {
         type: [UserSchema],
