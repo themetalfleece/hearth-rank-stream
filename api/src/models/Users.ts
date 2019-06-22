@@ -1,3 +1,4 @@
+import * as mongoose from 'mongoose';
 import { Document, Model, Schema } from 'mongoose';
 
 export interface IUserAttributes {
@@ -74,6 +75,4 @@ UserSchema.methods.incrementScore = function (by: number) {
     }
 };
 
-
-
-
+export const Users = mongoose.model<IUser, IUserModel>('Users', UserSchema);

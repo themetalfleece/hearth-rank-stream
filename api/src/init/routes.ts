@@ -3,13 +3,16 @@ import * as cors from 'cors';
 import { Express } from 'express';
 import * as express from 'express';
 import * as http from 'http';
+import * as jwt from 'jsonwebtoken';
 import * as logger from 'morgan';
 import * as path from 'path';
 
-import { router as lobbiesRouter } from '../routes/lobbies';
+import { router as lobbiesRouter } from '../routes/lobbies/index';
+import { router as loginRouter } from '../routes/login/index';
 
 export const useRoutes = (app: Express) => {
     app.use('/api/lobbies', lobbiesRouter);
+    app.use('/api/login', loginRouter);
 };
 
 export const init = () => {

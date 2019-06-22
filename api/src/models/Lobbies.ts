@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import { Document, Model, Schema } from 'mongoose';
-import { IUser, IUserAttributes, UserSchema } from './Users';
+import { UserKeys } from './UserKeys';
+import { IUser, IUserAttributes, Users, UserSchema } from './Users';
 
 export interface ILobbyAttributes {
     name: string;
@@ -29,10 +30,15 @@ const LobbySchema: Schema = new Schema({
     },
 });
 
-LobbySchema.methods.addUser = async function (user: IUserAttributes) {
+LobbySchema.methods.addUser = async function (userAttributes: IUserAttributes) {
     const lobby = this as ILobby;
-    this.users.push(user);
+    const user = new Users(userAttributes);
+    lobby.users.push(user);
     await lobby.save();
+    await UserKeys.create({
+        lobbyId: lobby._id,
+        userId: user._id,
+    });
 };
 
 LobbySchema.methods.removeUser = async function (userId: string) {

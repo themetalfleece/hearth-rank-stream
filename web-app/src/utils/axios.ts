@@ -6,4 +6,7 @@ export const apiAxios = axios.create({
     validateStatus: (status) => {
         return status >= 200 && status < 300;
     },
+    headers: {
+        Authorization: 'bearer ' + localStorage.getItem('jwt'),
+    }
 });

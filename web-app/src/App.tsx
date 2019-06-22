@@ -4,6 +4,7 @@ import ModActions from './components/Mod/ModActions';
 import User from './components/User/User';
 import ModDashboard from './components/Mod/ModDashboard';
 import UserTableStream from './components/User/UserTableStream';
+import LoginPage from './components/Login/LoginPage';
 
 const App: React.FC = () => {
   return (
@@ -21,8 +22,8 @@ const App: React.FC = () => {
         <Route path={['/lobbies/:lobbyId/']}>
           <UserTableStream />
         </Route>
-        <Route>
-          Invalid route
+        <Route path={['/']}>
+          <LoginPage />
         </Route>
       </Switch>
     </div>
