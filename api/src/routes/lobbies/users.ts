@@ -15,20 +15,24 @@ export const router = express.Router({ mergeParams: true });
  * @apiParam {Number} user.score.stars - the user's stars
  */
 router.post('/', async (req, res, next) => {
-    const { lobbyId } = req.body;
+    try {
+        const { lobbyId } = req.body;
 
-    const user: IUserAttributes = {
-        name: req.body.user && req.body.user.name,
-        score: req.body.user && req.body.user.score || {
-            rank: 4,
-            stars: 0,
-        },
-    };
+        const user: IUserAttributes = {
+            name: req.body.user && req.body.user.name,
+            score: req.body.user && req.body.user.score || {
+                rank: 4,
+                stars: 0,
+            },
+        };
 
-    const lobby = await Lobbies.findOne({ _id: lobbyId });
-    lobby.addUser(user);
+        const lobby = await Lobbies.findOne({ _id: lobbyId });
+        await lobby.addUser(user);
 
-    ws.io.to(lobbyId).emit('lobby-info', { lobby });
+        ws.io.to(lobbyId).emit('lobby-info', { lobby });
 
-    res.json({ ok: true, user });
+        res.json({ ok: true, user });
+    } catch (err) {
+        next(err);
+    }
 });
