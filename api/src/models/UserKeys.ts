@@ -28,6 +28,11 @@ const UserKeySchema: Schema = new Schema({
     },
 });
 
+// index them so they can be found or deleted fast
+UserKeySchema.index({ userId: 1 });
+UserKeySchema.index({ lobbyId: 1 });
+UserKeySchema.index({ key: 1 });
+
 UserKeySchema.pre('save', function (next) {
     const userKey = this as IUserKey;
     userKey.key = randomString({ length: 64 });
