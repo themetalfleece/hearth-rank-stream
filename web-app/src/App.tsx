@@ -4,7 +4,7 @@ import ModActions from './components/Mod/ModActions';
 import User from './components/User/User';
 import ModDashboard from './components/Mod/ModDashboard';
 import UserTableStream from './components/User/UserTableStream';
-import LoginPage from './components/Login/LoginPage';
+import AuthenticatePage from './components/Authenticate/AuthenticatePage';
 
 const App: React.FC = () => {
   return (
@@ -23,7 +23,7 @@ const App: React.FC = () => {
           <UserTableStream />
         </Route>
         <Route path={['/']}>
-          <LoginPage />
+          <AuthenticatePage />
         </Route>
       </Switch>
     </div>

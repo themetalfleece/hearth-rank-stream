@@ -7,12 +7,12 @@ import * as jwt from 'jsonwebtoken';
 import * as logger from 'morgan';
 import * as path from 'path';
 
+import { router as authenticateRouter } from '../routes/authenticate/index';
 import { router as lobbiesRouter } from '../routes/lobbies/index';
-import { router as loginRouter } from '../routes/login/index';
 
 export const useRoutes = (app: Express) => {
     app.use('/api/lobbies', lobbiesRouter);
-    app.use('/api/login', loginRouter);
+    app.use('/api/authenticate', authenticateRouter);
 };
 
 export const init = () => {

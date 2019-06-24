@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
 import { Button } from 'react-bootstrap';
 
-const LoginPage: React.FC = () => {
+const AuthenticatePage: React.FC = () => {
 
     // the user and lobby id which are gonna be given by the server, while logging in
     const [connectionInfo, setConnectionInfo] = React.useState({ userId: '', lobbyId: '' });
@@ -15,14 +15,14 @@ const LoginPage: React.FC = () => {
         return <Redirect to={`/lobbies/${connectionInfo.lobbyId}/users/${connectionInfo.userId}`}></Redirect>
     }
 
-    // makes the login request and saves the returned jwt into localStorage
-    const login = async () => {
+    // makes the authenticate request and saves the returned jwt into localStorage
+    const authenticate = async () => {
         if (isLoading) { return; }
 
         setIsLoading(true);
 
         try {
-            const res = await apiAxios.post('/login/',
+            const res = await apiAxios.post('/authenticate/',
                 {
                     key: accessKeyInputValue,
                 },
@@ -41,10 +41,10 @@ const LoginPage: React.FC = () => {
         }
     };
 
-    // if a jwt is already in the localStorage, try to login with it
+    // if a jwt is already in the localStorage, try to authenticate with it
     const jwt = localStorage.getItem(`jwt`);
     if (jwt) {
-        login();
+        authenticate();
     }
 
     return (<>
@@ -56,11 +56,11 @@ const LoginPage: React.FC = () => {
             }}
             onKeyDown={(event) => {
                 if (event.key !== 'Enter') { return; }
-                login();
+                authenticate();
             }}
         />
-        <Button onClick={login} disabled={isLoading}>Go</Button>
+        <Button onClick={authenticate} disabled={isLoading}>Go</Button>
     </>);
 };
 
-export default LoginPage;
+export default AuthenticatePage;

@@ -25,6 +25,6 @@
 ## How to build and run the web app
 * Navigate to the `web-app` directory with `cd web-app`
 * Create an `.env` file to match the corresponding `.env.example` with your values
-* For running in the development build, run `yarn dev`. It will automatically restart when you make changes
+* For running in the development build, run `yarn start`. It will automatically restart when you make changes
 * For the production build, run `yarn build`. This will generate the static files which need serving
 * You can serve those files with any http server, like [serve](https://www.npmjs.com/package/serve)
