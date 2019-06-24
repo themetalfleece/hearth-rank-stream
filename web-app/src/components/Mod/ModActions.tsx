@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
 import { Button } from 'react-bootstrap';
+import { setJWT } from '../../utils/authentication';
 
 const ModActions: React.FC = () => {
     // the lobby id which will be set while creating a game
@@ -21,8 +22,11 @@ const ModActions: React.FC = () => {
                 name: lobbyNameInputValue,
             });
 
-            if (res.data && res.data.id) {
+            if (res.data && res.data.id && res.data.token) {
+                // set the lobby id
                 setLobbyId(res.data.id);
+                // set the mod jwt
+                setJWT(res.data.token);
                 return;
             }
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { apiAxios } from '../../utils/axios';
 import { Button } from 'react-bootstrap';
+import { setJWT, getJWT } from '../../utils/authentication';
 
 const AuthenticatePage: React.FC = () => {
 
@@ -31,7 +32,7 @@ const AuthenticatePage: React.FC = () => {
             if (res.data.ok && res.data.token) {
                 // on success, save the token at localStorage
                 setConnectionInfo({ userId: res.data.userId, lobbyId: res.data.lobbyId });
-                localStorage.setItem('jwt', res.data.token);
+                setJWT(res.data.token);
                 return;
             }
 
@@ -42,7 +43,7 @@ const AuthenticatePage: React.FC = () => {
     };
 
     // if a jwt is already in the localStorage, try to authenticate with it
-    const jwt = localStorage.getItem(`jwt`);
+    const jwt = getJWT();
     if (jwt) {
         authenticate();
     }

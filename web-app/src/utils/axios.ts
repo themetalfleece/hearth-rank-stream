@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getJWT } from './authentication';
 
 export const apiAxios = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL || '//localhost:3000/api/',
@@ -8,6 +9,6 @@ export const apiAxios = axios.create({
     },
     headers: {
         // include the stored json web token
-        Authorization: 'bearer ' + localStorage.getItem('jwt'),
+        Authorization: 'bearer ' + getJWT(),
     }
 });
