@@ -1,6 +1,7 @@
 import * as express from 'express';
 import { ws } from '../../init/websockets';
 import { Lobbies } from '../../models/Lobbies';
+import { UserKeys } from '../../models/UserKeys';
 import { router as usersRoute } from './users';
 
 export const router = express.Router();
@@ -106,8 +107,14 @@ router.get('/:id', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const { name } = req.body;
+    // create the lobby
     const lobby = await Lobbies.create({ name });
-    res.json({ ok: true, id: lobby._id });
+    // create the corresponding mod UserKey
+    const userKey = await UserKeys.create({
+      lobbyId: lobby.id,
+      level: 'mod',
+    });
+    res.json({ ok: true, id: lobby._id, userKey });
   } catch (err) {
     next(err);
   }

@@ -40,6 +40,7 @@ LobbySchema.methods.addUser = async function (userAttributes: IUserAttributes) {
     await UserKeys.create({
         lobbyId: lobby._id,
         userId: user._id,
+        level: 'user',
     });
 };
 

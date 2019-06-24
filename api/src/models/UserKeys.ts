@@ -5,6 +5,7 @@ import { Document, Model, Schema } from 'mongoose';
 export interface IUserKeyAttributes {
     userId: mongoose.Types.ObjectId;
     lobbyId: mongoose.Types.ObjectId;
+    level: 'user' | 'mod';
     key?: string;
 }
 
@@ -17,7 +18,8 @@ export interface IUserKeyModel extends Model<IUserKey> { }
 const UserKeySchema: Schema = new Schema({
     userId: {
         type: mongoose.Types.ObjectId,
-        required: true,
+        // is only required for level: 'user
+        required: false,
     },
     lobbyId: {
         type: mongoose.Types.ObjectId,
@@ -25,6 +27,11 @@ const UserKeySchema: Schema = new Schema({
     },
     key: {
         type: String,
+    },
+    level: {
+        type: String,
+        enum: ['user', 'mod'],
+        required: true,
     },
 });
 
@@ -35,6 +42,11 @@ UserKeySchema.index({ key: 1 });
 
 UserKeySchema.pre('save', function (next) {
     const userKey = this as IUserKey;
+    // userId is required for level: 'user'
+    if (userKey.level === 'user' && !userKey.userId) {
+        throw new Error(`UserKey of level 'user' cannot be saved without a userId`);
+    }
+    // generate the key
     userKey.key = randomString({ length: 64 });
     next();
 });
