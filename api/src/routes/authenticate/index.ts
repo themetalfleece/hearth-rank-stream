@@ -7,7 +7,7 @@ router.post('/', async (req, res, next) => {
     try {
 
         // try {
-        //     // TODO make reusable
+        //     // TODO make reusable, also return level
         //     const token = req.headers.authorization.split(' ')[1];
         //     const payload: any = await jwt.verify(token, process.env.TOKEN_KEY);
         //     if (typeof payload === 'object' && payload.userId && payload.lobbyId) {

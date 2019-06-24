@@ -4,7 +4,9 @@ import { UserI } from '../../types/User';
 import { openSocket } from '../../utils/websockets';
 import { LobbyI } from '../../types/Lobby';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import qs from 'query-string';
+import { UserKeyI } from '../../types/UserKey';
 
 interface userTablePropsI extends RouteComponentProps<{
     // from the url
@@ -26,6 +28,8 @@ const UserTable: React.FC<userTablePropsI> = (props) => {
 
     // the users which will be fetched via socket data
     const [users, setUsers] = React.useState<UserI[]>([]);
+    // player keys, will be set only for mods
+    const [userKeys, setUserKeys] = React.useState<UserKeyI[]>([]);
 
     React.useEffect(() => {
         const socket = openSocket();
@@ -38,8 +42,11 @@ const UserTable: React.FC<userTablePropsI> = (props) => {
         })
 
         // lobby-info in the event which arrived each time anything regarding the users has changed
-        socket.on('lobby-info', (data: { lobby: LobbyI }) => {
+        socket.on('lobby-info', (data: { lobby: LobbyI, userKeys: UserKeyI[] }) => {
             setUsers(data.lobby.users);
+            if (data.userKeys) {
+                setUserKeys(data.userKeys);
+            }
         });
 
         // close the socket when closing
@@ -82,25 +89,31 @@ const UserTable: React.FC<userTablePropsI> = (props) => {
                             return p1._id > p2._id ? 1 : -1;
                         })
                         .slice(0, maxColumns)
-                        .map((user) => <tr key={user._id}>
-                            <td><UserScore score={user.score} /></td>
-                            <td>
-                                {/* on player click, go to its page */}
-                                <a href={`/lobbies/${props.lobbyId}/users/${user._id}`} target='_blank' rel="noopener noreferrer">
-                                    <div style={{ width: '100%', height: '100%' }}>
-                                        {user.name}
-                                    </div>
-                                </a>
-                            </td>
-                            {
-                                props.onKick ?
-                                    <td
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() => props.onKick && props.onKick(user)}
-                                    ><span role="img" aria-label="kick">🚫</span></td>
-                                    : null
-                            }
-                        </tr>)
+                        .map((user) => {
+                            const userKey = userKeys.find((userKey) => userKey.userId === user._id);
+                            const playerNameElement = <div style={{ width: '100%', height: '100%' }}>
+                                {user.name}
+                            </div>;
+                            return <tr key={user._id}>
+                                <td><UserScore score={user.score} /></td>
+                                <td style={{ cursor: 'pointer' }}>
+                                    {/* on player click, copy the corresponding userKey if it exists */}
+                                    {!userKey ? playerNameElement :
+                                        <CopyToClipboard text={userKey ? userKey.key : ''}>
+                                            {playerNameElement}
+                                        </CopyToClipboard>
+                                    }
+                                </td>
+                                {
+                                    props.onKick ?
+                                        <td
+                                            style={{ cursor: 'pointer' }}
+                                            onClick={() => props.onKick && props.onKick(user)}
+                                        ><span role="img" aria-label="kick">🚫</span></td>
+                                        : null
+                                }
+                            </tr>
+                        })
                 }
             </tbody>
         </table>

@@ -51,7 +51,7 @@ router.put('/:lobbyId/users/:userId', async (req, res, next) => {
         const lobby = await Lobbies.findOne({ _id: lobbyId });
         const user = await lobby.incrementUserScore(userId, by);
 
-        ws.io.to(lobbyId).emit('lobby-info', { lobby });
+        await lobby.emitLobbyInfo();
 
         res.json({ ok: true, user });
     } catch (err) {
@@ -72,7 +72,7 @@ router.delete('/:lobbyId/users/:userId', async (req, res, next) => {
         const lobby = await Lobbies.findOne({ _id: lobbyId });
         lobby.removeUser(userId);
 
-        ws.io.to(lobbyId).emit('lobby-info', { lobby });
+        await lobby.emitLobbyInfo();
 
         res.json({ ok: true });
     } catch (err) {

@@ -29,7 +29,7 @@ router.post('/', async (req, res, next) => {
         const lobby = await Lobbies.findOne({ _id: lobbyId });
         await lobby.addUser(user);
 
-        ws.io.to(lobbyId).emit('lobby-info', { lobby });
+        await lobby.emitLobbyInfo();
 
         res.json({ ok: true, user });
     } catch (err) {

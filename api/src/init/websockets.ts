@@ -4,8 +4,10 @@ import { Lobbies } from '../models/Lobbies';
 
 export const ws: {
     io: socket.Server;
+    getRoomName: (params: { lobbyId: string; level: 'user' | 'mod' }) => string;
 } = {
     io: null,
+    getRoomName: (params) => params.level + ' ' + params.lobbyId,
 };
 
 export const init = (server?: Server) => {
@@ -18,15 +20,20 @@ export const init = (server?: Server) => {
     ws.io = socket(server);
     try {
         ws.io.on('connection', (socket) => {
+            // TODO set it by the jwt
+            const level: 'user' | 'mod' = 'mod';
             socket.on('join-lobby', async (data) => {
                 if (data && data.lobbyId) {
-                    // the the room by lobbyId
-                    socket.join(data && data.lobbyId);
+                    // the the room by lobbyId, separated mod-user via authentication
+                    if (data && data.lobbyId) {
+                        const { lobbyId } = data;
+                        const roomName = ws.getRoomName({ lobbyId, level });
+                        socket.join(roomName);
+                    }
 
+                    const lobby = await Lobbies.findOne({ _id: data.lobbyId });
                     // emit the current lobby info
-                    socket.emit('lobby-info', {
-                        lobby: await Lobbies.findOne({ _id: data.lobbyId }),
-                    });
+                    await lobby.emitLobbyInfo();
                 }
             });
         });

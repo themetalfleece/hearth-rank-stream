@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 import { Document, Model, Schema } from 'mongoose';
 
 export interface IUserKeyAttributes {
-    userId: mongoose.Types.ObjectId;
+    userId?: mongoose.Types.ObjectId;
     lobbyId: mongoose.Types.ObjectId;
     level: 'user' | 'mod';
     key?: string;

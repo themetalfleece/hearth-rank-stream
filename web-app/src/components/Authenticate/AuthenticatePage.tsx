@@ -27,7 +27,7 @@ const AuthenticatePage: React.FC = () => {
         try {
             const res = await apiAxios.post('/authenticate/',
                 {
-                    key: accessKeyInputValue,
+                    key: accessKeyInputValue.trim(),
                 },
             );
 
