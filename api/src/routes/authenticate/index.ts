@@ -25,19 +25,35 @@ router.post('/', async (req, res, next) => {
             throw new Error(`Access key is invalid`);
         }
 
-        const { userId, lobbyId } = userKey;
+        if (userKey.level === 'user') {
+            const { userId, lobbyId } = userKey;
 
-        const token = UserKeys.createForUser({
-            userId: userId.toHexString(),
-            lobbyId: lobbyId.toHexString(),
-        });
+            const token = UserKeys.createForUser({
+                userId: userId.toHexString(),
+                lobbyId: lobbyId.toHexString(),
+            });
 
-        res.json({
-            ok: true,
-            token,
-            userId,
-            lobbyId,
-        });
+            return res.json({
+                ok: true,
+                level: userKey.level,
+                token,
+                userId,
+                lobbyId,
+            });
+        } else if (userKey.level === 'mod') {
+            const { lobbyId } = userKey;
+
+            const token = UserKeys.createForMod({
+                lobbyId: lobbyId.toHexString(),
+            });
+
+            return res.json({
+                ok: true,
+                level: userKey.level,
+                token,
+                lobbyId,
+            });
+        }
     } catch (err) {
         next(err);
     }
